@@ -77,7 +77,8 @@ int main(int argc, char *argv[])
 
     while ( game_running && menu_loop )
     {
-      SDL_Delay(20);
+      staticwait(20);
+//      SDL_Delay(20);
       status = loop_mainmenu();
       if(status == 1)
       {
@@ -88,6 +89,8 @@ int main(int argc, char *argv[])
 
     while ( game_running && prep_loop )
     {
+      staticwait(20);
+
       status = loop_initgame();
       if(status == 1)
       {
@@ -372,13 +375,13 @@ int         loop_initgame()
   if(status == 1)
   {
     steps++;
-    SDL_Delay(50);
+//    SDL_Delay(50);
     for(int i=0;i<6;i++)
     {
       player[i].render_go_step() ;
       player[i].render_trail_display() ;
     }
-    if(steps > 9)
+    if(steps > 5)
     {
       status = 2;
       steps  = 0;
@@ -388,11 +391,13 @@ int         loop_initgame()
   if(status > 1)
   {
 //    SDL_Delay(1000.0f / DEF_DEADFADE );
-    SDL_Delay(20);
+//      staticwait(20); //   SDL_Delay(20);
 
     float fade = ((DEF_NUMFADE - steps) * 1.0f /DEF_NUMFADE < 0 ? 0 : (DEF_NUMFADE - steps) * 1.0f /DEF_NUMFADE) ;
 
     text.countdown( 5 - status + fade );
+
+    fade -= 0.5f ;
 
     for(int i=0;i<6;i++)
     {
@@ -497,6 +502,7 @@ int         loop_run_game()
       }
     }
   }
+
 
 //  DEBUG( std::cout << " L " << global.livecount << " P " << global.playercount << "\n" ; )
 

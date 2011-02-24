@@ -42,8 +42,8 @@ private:
   float  color_trail[3] ;
   float  color_gap[3] ;
 
-  int    winkel;
-
+  int    winkel;         // direction .. what short english word would fit?
+  int    winkel_changed;
 public:
   int    score;
   bool   playing;
@@ -64,8 +64,8 @@ public:
 
   int   collide_check() ;
 
-  void  go_left()    {  winkel = (winkel + 1) % DEF_WMAX ; }
-  void  go_right()   {  winkel = (winkel - 1) % DEF_WMAX ; }
+  void  go_left()    {  winkel = (winkel + 1) % DEF_WMAX ;  winkel_changed = +1 ; }
+  void  go_right()   {  winkel = (winkel - 1) % DEF_WMAX ;  winkel_changed = -1 ; }
   bool  isalive()    {  return alive && playing ;  } 
   void  kill()       {  dead = true; }
 
