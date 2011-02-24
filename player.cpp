@@ -70,9 +70,9 @@ void  player_c::set_color(  float r, float g, float b)
   color_trail[1] = g ;
   color_trail[2] = b ;
 
-  color_gap[0] = 0.20 ;
-  color_gap[1] = 0.20 ;
-  color_gap[2] = 0.20 ;
+  color_gap[0] = r * 0.4f ;
+  color_gap[1] = g * 0.4f ;
+  color_gap[2] = b * 0.4f ;
 }
 
 void  player_c::gl_color(float alpha)
@@ -80,72 +80,6 @@ void  player_c::gl_color(float alpha)
   glColor4f( color_trail[0] , color_trail[1] , color_trail[2] , alpha ) ;
 }
 
-void  player_c::collide_prepare()
-{
-
-  glSelectBuffer(DEF_SBUF, select_buf);
-  glRenderMode(GL_SELECT);
-
-  glInitNames();
-  glPushName(10);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  float x = ( t_current->x1 + t_current->x2 ) / 2.0f ;
-  float y = ( t_current->y1 + t_current->y2 ) / 2.0f ;
-  
-  glOrtho( x - DEF_TRWIDTH * 0.7f , x + DEF_TRWIDTH * 0.7f , y - DEF_TRWIDTH * 0.7f , y + DEF_TRWIDTH * 0.7f , -1.0f , 1.0f) ;
-
-
-//  glColor4f( 1.0f,1.0f,1.0f , 0.25f);
-
-}
-
-int   player_c::collide_check()
-{
-  glPopName();
-  glFlush();
-  hits=0;
-  hits = glRenderMode(GL_RENDER);
-  glLoadIdentity();
-
-  if(hits==0 || !alive || !playing ) return -1;
-
-  GLuint  *bufp = select_buf ;
-  GLuint  name, numnames, z1, z2;
-  bool    killer = false ;
-
-  for(unsigned int j = 0; j < hits; j++)
-  {
-    numnames = *bufp++;
-    z1 = *bufp++;
-    z2 = *bufp++;
-    DEBUG( std::cout << " N " << numnames ; )
-    while(numnames--)
-    {
-      name = *bufp++;
-
-      if(name > 0 && name < 7 && name != (id+1))
-      { 
-        return name ; 
-      }
-
-      if(name == 10 || name == 0)
-      {
-        killer = true ;
-      }
-    }
-  }
-
-  float  x, y;
-  x = t_current->x1 + t_current->x2 ;
-  y = t_current->y1 + t_current->y2 ;
-  if(x < 0 || y < 0 || x > 2* global.gl_width || y > 2*global.gl_height -50)
-    {  killer = true;  }
-
-  if (killer) return 10 ;
-  return -1 ;
-}
 
 void  player_c::render_go_step()
 {
@@ -159,8 +93,7 @@ void  player_c::render_go_step()
     step->status = 30 ;
     step->type   = ( hole_len > hole_next ? 1 : 0 ) ;
 
-    float tmp_winkel = 2 * M_PI * winkel / DEF_WMAX ;
-
+//    float tmp_winkel = 2 * M_PI * winkel / DEF_WMAX ;
 
     float  x, y;
     x = (t_current->x1 + t_current->x2) / 2.0f ;
@@ -187,6 +120,8 @@ void  player_c::render_go_step()
     t_current->next = step;
     step->prev = t_current;
     t_current = step;
+    
+    step->next = NULL;
 
     disappear--;
     if(disappear == 0)
@@ -212,61 +147,6 @@ void  player_c::render_trail_display()
 
 }
 
-void  player_c::render_trail_collide()
-{
-  if(!playing) return;
-
-  // render with no color and without holes (gray in display)
-  // NOTE: Make Gaps
-  bool drawing = true ;
-  bool named = false ;
-  glLoadName(10);
-  glBegin( GL_TRIANGLE_STRIP );
-
-  trailobj* t_draw;
-  t_draw = t_start;
-  while( t_draw != t_current )
-  {
-    t_draw = t_draw->next ;
-    if(t_draw->status == 0 && named)
-    {
-      named = false ;
-      glEnd();
-      glLoadName(10);
-      glBegin( GL_TRIANGLE_STRIP );
-    }
-
-    if(t_draw->status != 0 && !named)
-    {
-      named = true ;
-      glEnd();
-      glLoadName(id + 1);
-      glBegin( GL_TRIANGLE_STRIP );
-    }
-
-
-    if(t_draw->type == 0 && !drawing )
-    {
-      drawing=true;
-      glBegin( GL_TRIANGLE_STRIP );
-    }
-      
-    if(t_draw->type != 0 && drawing )
-    {
-      drawing=false;
-      glEnd();
-    }
-      
-    if(drawing)
-    {
-      glVertex3f( t_draw->x1 , t_draw->y1 , 0.0f ) ;
-      glVertex3f( t_draw->x2 , t_draw->y2 , 0.0f ) ;
-    }
-  }
-
-  glEnd() ;
-
-}
 
 void  player_c::render_trail_display_fade( float alpha , float white )
 {
@@ -277,10 +157,8 @@ void  player_c::render_trail_display_fade( float alpha , float white )
 
   glBegin( GL_TRIANGLE_STRIP );
 
-  while( t_current != t_draw )
+  do
   {
-    t_draw = t_draw->next ;
-
     if(t_draw->type == 0)
       glColor3f(
           ( ( t_draw->status % 10 ) / 10.0f + color_trail[0] )  * alpha  + white ,
@@ -299,7 +177,49 @@ void  player_c::render_trail_display_fade( float alpha , float white )
 
     if( t_draw->status ) t_draw->status-- ;
   }
+  while( NULL != (t_draw = t_draw->next) );
+
   glEnd() ;
 
 }
 
+
+bool  player_c::collide_contains_point_head(int x, int y)
+{
+  quadcheck qc(t_current);
+
+  if(qc.check_point(x,y)) std::cout << "killed by " << x << " " << y << std::endl ;
+  
+  return  qc.check_point(x,y);
+}
+
+
+trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
+{
+  trailcheck tc;
+  tc.point(x,y);
+  
+  trailobj* t_draw;
+  t_draw = t_start;
+  
+  trailobj* t_end;
+  t_end = t_current;
+  
+  //prevent self collision
+  if(self) t_end = t_end->prev->prev->prev;
+  
+  while( t_draw != t_end )
+  {
+    t_draw = t_draw->next ;
+
+    if(t_draw->type == 0 )
+    {
+      if(tc.check(t_draw))
+      {
+        std::cout << "killed by " << x << " " << y << (self? " Self" : " other") << std::endl ;
+        return t_draw;
+      }
+    }
+  }
+  return NULL; 
+}

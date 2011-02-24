@@ -4,24 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "including.h"
-
-struct trailobj;
-
-struct trailobj
-{
-  trailobj* next ;
-  trailobj* prev ;
-  int status ;     // 0       : Normal
-  		   // ? --> 1 : Fadein
-
-  int type ;       // 0    : Normal
-                   // 1    : Gap / Loch
-
-  float x1, x2,	   // Coordinates the trail goes to in that step
-        y1, y2 ;   //
-};
-
-
+#include "collision.h"
 class player_c
 {
 private:
@@ -55,14 +38,12 @@ public:
   void  set_color(  float r, float g, float b );
   void  gl_color(float alpha=1.0f);
 
-  void  render_trail_collide() ;
   void  render_go_step() ;
   void  render_trail_display() ;
   void  render_trail_display_fade(float alpha, float white) ;
 
-  void  collide_prepare() ; // set view to a quad containing the 2 points from t_current
-
-  int   collide_check() ;
+  bool  collide_contains_point_head(int x, int y);  
+  trailobj*  collide_contains_point_trail(int x, int y, bool self=false);
 
   void  go_left()    {  winkel = (winkel + 1) % DEF_WMAX ;  winkel_changed = +1 ; }
   void  go_right()   {  winkel = (winkel - 1) % DEF_WMAX ;  winkel_changed = -1 ; }

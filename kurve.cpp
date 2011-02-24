@@ -139,32 +139,6 @@ int main(int argc, char *argv[])
   return 1;
 }
 
-void  check_collisions()
-{
-  static int i , j , k ;
-  for(i=0;i<6;i++)
-  {
-    player[i].collide_prepare();
-
-    for(i=0;i<6;i++)
-    {
-      player[j].render_trail_collide();
-    }
-
-    k = player[i].collide_check();
-
-    if(k >  0) player[k-1].score+=2 ;
-    if(k == 10)
-    {
-      for(k=0;k<6;k++)
-      {
-         if(player[k].isalive()) player[k].score++ ;
-      }
-    }
-//  player[i].score-- ;
-  }
-}
-
 
 void  gl_init( int w , int h )
 {
@@ -483,15 +457,51 @@ int         loop_run_game()
   {
     if(player[i].isalive())
     {
-      player[i].collide_prepare();
-      for(int k=0;k<6;k++)
-      {
-        player[k].render_trail_collide();
-      }
-      int c = player[i].collide_check() ;
+      bool  check = false;
+      int   killer = -1;
+      trailobj* t_curr = player[i].get_t_current() ;
 
-      if( 0 < c && c < 7 )player[c-1].score++;
-      if( 0 < c )
+      for(int k=0;k<6;k++)
+      {      
+        if( !player[k].playing ) continue ;
+        
+        trailobj* t_draw = player[k].get_t_start() ;
+        trailobj* t_end  = player[k].get_t_current() ;
+        
+        
+        if(i == k) t_end = t_end->prev->prev;
+        
+        while( t_draw != t_end && !check)
+        {
+          t_draw = t_draw->next ;
+
+          if(t_draw->type == 0 )
+          {
+            check = check || player[i].collide_contains_point_head(t_draw->x1 , t_draw->y1);
+            check = check || player[i].collide_contains_point_head(t_draw->x2 , t_draw->y2);
+          }
+        }
+        
+
+        if(!check)
+        {
+          t_draw = player[k].collide_contains_point_trail( t_curr->x1, t_curr->y1 , (i==k) );
+          if(NULL == t_draw)
+          {
+            t_draw = player[k].collide_contains_point_trail( t_curr->x2, t_curr->y2 , (i==k) );
+          }
+        }
+
+        if(NULL != t_draw)
+        {
+          check = true;
+        }
+
+        
+        if(check && t_draw->status > 0) killer = k ;
+      }
+  
+      if( check )
       {
         global.livecount--;
         player[i].kill();
@@ -499,6 +509,7 @@ int         loop_run_game()
         {
           if( i != k && player[k].isalive()) player[k].score++;
         }
+        if(killer > -1) player[killer].score++;
       }
     }
   }
