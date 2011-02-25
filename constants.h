@@ -13,12 +13,14 @@
 #define DEF_WMAX        72
 
 #define DEF_BDIST      150
+#define DEF_WALL      1.5f
+#define DEF_SCORES      25
 
 #define DEF_DEADFADE    30
 #define DEF_MENUFADE  0.1f
 #define DEF_NUMFADE    100
+#define DEF_ALPHA    0.45f
 
-#define DEF_ALPHA     0.45f
 
 struct __globals
 {

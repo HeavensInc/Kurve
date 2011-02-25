@@ -1,4 +1,4 @@
-VERSION = 0.01 RC1
+VERSION = 0.02 Collision
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++

@@ -336,11 +336,29 @@ int         loop_initgame()
   {
     global.livecount = global.playercount ;
 
-    for(int i=0;i<6;i++)
+    float a[6];
+    float b[6];
+    int tries=0;    
+    int i=0;
+    while(i < 6 && tries < 10)
     {
-      float a = rand() % (global.gl_height - 2 * DEF_BDIST) + DEF_BDIST ;
-      float b = rand() % (global.gl_width  - 2 * DEF_BDIST) + DEF_BDIST ;
-      player[i].initialize(b,a,i);
+      a[i] = rand() % (global.gl_height - 2 * DEF_BDIST) + DEF_BDIST ;
+      b[i] = rand() % (global.gl_width  - 2 * DEF_BDIST) + DEF_BDIST ;
+      
+      for(int k=0;k<i;k++)
+      {
+        if(player[k].playing)
+        {
+          float dist= sqrt( (b[k] - b[i]) * (b[k] - b[i])  +  (a[k] - a[i]) * (a[k] - a[i])) ;
+          if(dist < DEF_BDIST)
+          {
+            tries++;
+            continue;
+          }
+        }
+      }      
+      player[i].initialize(b[i],a[i],i);
+      i++;
     }
     status++;
   }
@@ -460,6 +478,10 @@ int         loop_run_game()
       bool  check = false;
       int   killer = -1;
       trailobj* t_curr = player[i].get_t_current() ;
+      float x = (t_curr->x1 + t_curr->x2) /2.0f;
+      float y = (t_curr->y1 + t_curr->y2) /2.0f;
+      if( x < DEF_WALL || y < DEF_WALL || x > global.gl_width - DEF_WALL || y > global.gl_height - DEF_SCORES - DEF_WALL )
+        check = true;
 
       for(int k=0;k<6;k++)
       {      
