@@ -115,8 +115,8 @@ coordinaten getcoord(char letter)
 void __text::load()
 {
   SDL_Surface *surface;
-  GLenum texture_format;
-  GLint  nOfColors;
+  GLenum texture_format = 0;
+  GLint  nOfColors      = 0;
   bool image_loaded ;
 
   image_loaded = (surface = SDL_LoadBMP( texture )) ;

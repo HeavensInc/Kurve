@@ -64,7 +64,6 @@ bool quadcheck::check_point(float x, float y)
         
     if(det < 0) return false;
   }
-  std::cout << "HIT" ;
   return true;
 }
 

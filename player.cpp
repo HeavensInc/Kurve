@@ -216,7 +216,6 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
     {
       if(tc.check(t_draw))
       {
-        std::cout << "killed by " << x << " " << y << (self? " Self" : " other") << std::endl ;
         return t_draw;
       }
     }

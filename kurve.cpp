@@ -340,7 +340,7 @@ int         loop_initgame()
     float b[6];
     int tries=0;    
     int i=0;
-    while(i < 6 && tries < 10)
+    while(i < 6)
     {
       a[i] = rand() % (global.gl_height - 2 * DEF_BDIST) + DEF_BDIST ;
       b[i] = rand() % (global.gl_width  - 2 * DEF_BDIST) + DEF_BDIST ;
@@ -350,15 +350,17 @@ int         loop_initgame()
         if(player[k].playing)
         {
           float dist= sqrt( (b[k] - b[i]) * (b[k] - b[i])  +  (a[k] - a[i]) * (a[k] - a[i])) ;
-          if(dist < DEF_BDIST)
+          if(dist < DEF_BDIST && tries < 10)
           {
             tries++;
-            continue;
+            i--;
+            break; //inner for loop
           }
         }
       }      
       player[i].initialize(b[i],a[i],i);
       i++;
+      tries = 0 ;
     }
     status++;
   }
