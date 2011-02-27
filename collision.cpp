@@ -230,42 +230,40 @@ void distcheck::calc_walls()
 
 void distcheck::calc_tob(trailobj* tob)
 {
+  if(tob->type > 0) return;
+
   float dir;
   float t_dist;
+
   
   float vecx = tob->x1 - x ;
   float vecy = tob->y1 - y ;
 
   dir = get_direction( vecx , vecy );
-  t_dist = sqrt( vecx*vecx + vecy*vecy );
+  t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 25? 0.25f : 1.0f);
 
+  if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
+  {
+    int t_part = parts / 2.0f + dir * parts / M_PI ;
+    if(t_part >= parts) t_part = parts-1;
+       
+    min_dist[t_part] = (min_dist[t_part] < t_dist ? min_dist[t_part] : t_dist) ;
+  }
+
+
+  vecx = tob->x2 - x ;
+  vecy = tob->y2 - y ;
+
+  dir = get_direction( vecx , vecy );
+  t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 25? 0.25f : 1.0f);
 
   if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
   {
     int t_part = parts / 2.0f + dir * parts / M_PI ;
     if(t_part >= parts) t_part = parts-1;
     
-    float t_dist = sqrt( vecx*vecx + vecy*vecy );
-    
     min_dist[t_part] = (min_dist[t_part] < t_dist ? min_dist[t_part] : t_dist) ;
   }
-  
-/*  
-
-  dir = M_PI - get_direction( tob->x2-x , tob->y2-y );
-  if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
-  {
-    int t_part = (dir +0.5f * M_PI) * parts / M_PI ;
-    if(t_part >= parts) t_part = parts-1;
-    
-    float t_dist = sqrt( pow(tob->x2-x ,2) + pow(tob->y2-y,2) );
-    
-     min_dist[t_part] = (min_dist[t_part] < t_dist ? min_dist[t_part] : t_dist) ;
-     
-     std::cout << 180 * dir / M_PI << std::endl ;
-  }
-  
-  */
   
 }
 

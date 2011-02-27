@@ -15,6 +15,7 @@ public: // Intelligence
 AI_basic::AI_basic()
 {
   dc = new distcheck(9);
+  decision = 0;
 }
 
 AI_basic::~AI_basic()
@@ -64,31 +65,32 @@ void  AI_basic::calculate()
   
   for(int i=0; i<9; i++)
   {
-    int a = i/3;
+    int a;
+    if(i < 4)
+    {
+      a = 0 ;
+    }
+    if(i == 4)
+    {
+      a = 1 ;
+    }    
+    if(i > 4)
+    {
+      a = 2 ;
+    }
     decide[a] += dc->get_part(i) ;
-//    std::cout << a << " += " << dc.get_part(i) << std::endl ;
-//    printf("  %3f" , dc->get_part(i) );
   }
+
+  decide[4] *= 4 ;
   
-//  decide[2] *= 0.0f ;
-//  std::cout << std::endl ;
-  
-/*
-    decide[i/3] += log(
-                       1+sqrt(
-                               dc.get_part(i)
-                              )
-                       );
-*/
-  
-//  int randomchoice = get_random_choice();
-//  decide[1-randomchoice] *= 1.1f;
+  int randomchoice = get_random_choice();
+  decide[1-randomchoice] *= 1.0005f;
 
 //  std::cout << decide[0] << " "  << decide[1] << " " << decide[2] << std::endl;
 
 //  printf("  %3f  %3f  %3f  \n" , decide[0] , decide[1] , decide[2] );
-  decide[0] += ( 300 - decide[2] ) / 1000.0f ;
-  decide[2] += ( 300 - decide[0] ) / 1000.0f ;
+  decide[0] += ( 300 - decide[2] ) / 20.0f ;
+  decide[2] += ( 300 - decide[0] ) / 20.0f ;
 
   
   if( decide[0] > decide[1] && decide[0] > decide[2] )

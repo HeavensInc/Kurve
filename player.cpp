@@ -184,20 +184,22 @@ void  player_c::render_go_step(player_c* players)
       for(int i=0;i<6;i++)
         tobs[i] = players[i].get_t_start();
 
-//      std::cout << "AI Patching" << std::endl ;
+      std::cout << "AI Patching" << std::endl ;
 
       intelligence->patch_pointers(tobs, t_current );
       
-//      std::cout << "AI Calculating" << std::endl ;
+      std::cout << "AI Calculating" << std::endl ;
 
       intelligence->calculate();
       
-//      std::cout << "AI Steering" << std::endl ;
+      std::cout << "AI Steering" << std::endl ;
+
+      intelligence->steer();
 
       winkel          = ( winkel + intelligence->steer() ) % DEF_WMAX ;
       winkel_changed  =            intelligence->steer() ;
       
-//      std::cout << "AI done" << std::endl ;
+      std::cout << "AI done" << std::endl ;
 
     }
     // Go a step...
@@ -239,7 +241,7 @@ void  player_c::render_go_step(player_c* players)
     disappear--;
     if(disappear == 0)
     {
-      disappear = 10 ;
+      disappear = 5 ;
       t_start = t_start->next ;
       delete t_start->prev ;
       t_start->prev = NULL ;

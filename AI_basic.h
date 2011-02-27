@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include "AI_base.h"
 
-#define AI_BASIC_RADIUS 200
-
 class AI_basic : public AI_base
 {
 /*
@@ -29,7 +27,6 @@ public: // Intelligence
   
   void  calculate();
   int   steer(); // +1  0 -1
-  
 }
 ;
 #endif //AI_basic_h
