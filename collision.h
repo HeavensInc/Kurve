@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <math.h>
+#include "constants.h"
 
 struct trailobj;
 struct trailobj
@@ -40,6 +41,30 @@ private:
 public:
   void  point(float new_x, float new_y);
   bool  check(trailobj* tob);
+};
+
+
+class distcheck
+{
+private:
+  float  x,y;
+  float  vector_x, vector_y;
+  float  direction;
+  int    parts;
+  float* min_dist;
+  
+  float get_direction(float dx, float dy);
+public:
+  distcheck(int parts);
+  ~distcheck();
+  
+  void   setup(trailobj* tob);
+  
+  void   calc_walls();
+  void   calc_tob(trailobj* tob);
+  
+  int   get_parts(){ return parts; }
+  float get_part(int dir);
 };
 
 #endif //collision_h

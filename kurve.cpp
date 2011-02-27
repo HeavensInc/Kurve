@@ -185,7 +185,7 @@ bool  commonevent(SDL_Event* event)
       case SDL_QUIT:
         game_running = false;
         break;
-
+       
       default:
         return false;
         break;
@@ -202,12 +202,15 @@ int   loop_mainmenu()
     commonevent(&event);
     if(event.type == SDL_MOUSEBUTTONDOWN)
       if(event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT)
-         player[4].playing = !player[4].playing ;
+         player[4].pt_next();
 
     if(event.type == SDL_KEYDOWN && status < 3)
     {
     switch(event.key.keysym.sym)
       {
+      case SDLK_ESCAPE:
+        game_running = false;
+        break;
 
       case SDLK_SPACE:
         if(global.playercount > 1)
@@ -217,27 +220,27 @@ int   loop_mainmenu()
 
       case SDLK_1:
       case SDLK_q:
-        player[0].playing = !player[0].playing ;
+        player[0].pt_next();
         break;
 
       case SDLK_x:
       case SDLK_c:
-        player[1].playing = !player[1].playing ;
+        player[1].pt_next();
         break;
 
       case SDLK_n:
       case SDLK_m:
-        player[2].playing = !player[2].playing ;
+        player[2].pt_next();
         break;
 
       case SDLK_LEFT:
       case SDLK_RIGHT:
-        player[3].playing = !player[3].playing ;
+        player[3].pt_next();
         break;
 
       case SDLK_KP_PLUS:
       case SDLK_KP_MINUS:
-        player[5].playing = !player[5].playing ;
+        player[5].pt_next();
         break;
 
       default:
@@ -372,7 +375,7 @@ int         loop_initgame()
 //    SDL_Delay(50);
     for(int i=0;i<6;i++)
     {
-      player[i].render_go_step() ;
+      player[i].render_go_step(player) ;
       player[i].render_trail_display() ;
     }
     if(steps > 5)
@@ -465,7 +468,7 @@ int         loop_run_game()
 
   for(int i=0;i<6;i++)
   {
-    player[i].render_go_step();
+    player[i].render_go_step(player);
     player[i].render_trail_display();
   }
 

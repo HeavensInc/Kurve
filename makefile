@@ -1,4 +1,4 @@
-VERSION = 0.02 Collision
+VERSION = 0.03 AI-Dist
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
@@ -12,7 +12,7 @@ W32LIBS = -static-libgcc -static-libstdc++ -lSDL -lopengl32
 UNUSED  =  -lSDLmain  -lmingw32
 
 DEF = including.h staticwait.h
-HDR = player.h constants.h text.h collision.h
+HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h
 SRC = kurve.cpp $(HDR:%.h=%.cpp)
 OBJ = $(SRC:%.cpp=%.o)
 W32 = $(SRC:%.cpp=%.w32)
@@ -22,6 +22,9 @@ W32 = $(SRC:%.cpp=%.w32)
 
 kurve: $(OBJ) $(HDR) $(DEF) 
 	$(CC) $(CFLAGS) -o kurve $(OBJ) $(LIBS)
+	
+test: testsuite.o 
+	$(CC) $(CFLAGS) -o test testsuite.o constants.o collision.o
 
 %.o: %.cpp $(HDR) $(DEF) 
 	$(CC) $(CFLAGS) -c $<
@@ -43,3 +46,6 @@ cross: $(W32) $(HDR) $(DEF)
 
 %.w32: %.cpp $(HDR) $(DEF) 
 	$(W32CC) -o $@ -c $<
+	
+	
+	

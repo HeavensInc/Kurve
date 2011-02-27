@@ -192,8 +192,34 @@ void __text::draw(char* text , int x , int y)
   glLoadIdentity();
 }
 
+char* get_steer_string(int id)
+{
+  const char* strings[] = { (char*)"1 Q" , (char*)"X C"       , (char*)"N M",
+                            (char*)"< >" , (char*)"\x01 \x02" , (char*)"+ -" } ;
+                   
+  if(id > -1 && id < 6)
+     return (char*)strings[id] ;
+     
+  return (char*)"ERR" ;
+}
+
 void __text::gamemenu(player_c* players , float alpha)
 {
+  for(int i=0;i<6;i++)
+  {
+    if(players[i].playing)
+      { players[i].gl_color(alpha); }
+    else
+      { players[i].gl_color( DEF_ALPHA * alpha); }
+
+    char displaystring[256];    
+
+    sprintf(displaystring, "Player %d  ( %s )  %s" , i+1, get_steer_string(i), players[i].get_name() );
+    
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * i + 40) ;
+  }
+}
+/*
   if(players[0].playing)
   {
     players[0].gl_color(alpha);
@@ -260,7 +286,7 @@ void __text::gamemenu(player_c* players , float alpha)
      draw( (char*)"Player 6  ( + - )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (-2) ) ;
   }
 }
-
+*/
 
 void __text::helper(int select, bool reset, bool fade)
 {

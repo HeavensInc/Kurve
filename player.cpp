@@ -1,5 +1,32 @@
 #include "player.h"
 
+// Names ...
+
+const char AI_name_nothing[] = " --- " ;
+const char AI_name_human[]   = "Playing" ;
+const char AI_name_basic[]   = "AI-Dist" ;
+
+const char AI_name_unknown[] = "AI-Whatever" ;
+const char AI_name_error[]   = "[ E R R ]" ;
+
+char* get_AI_name(int pt)
+{
+  if(pt < 0 || pt >= pt_enum_end )
+    return (char*)AI_name_error ;
+  
+  switch(pt)
+  {
+  case pt_nothing:
+    return (char*)AI_name_nothing;
+  case pt_human:
+    return (char*)AI_name_human ;
+  case pt_ai_distances:
+    return (char*)AI_name_basic ;
+    
+  default:
+    return (char*)AI_name_unknown ;
+  }
+}
 // Globals & temp
 
 GLuint select_buf[DEF_SBUF];
@@ -9,6 +36,8 @@ GLuint hits;
 
 player_c::player_c()
 {
+  intelligence = NULL ;
+  
   score   =     0 ;
   playing = false ;
 }
@@ -23,10 +52,67 @@ player_c::~player_c()
     t_current = t_current->prev;
     delete    t_temp ;
   }
+  
+  if(intelligence != NULL)
+    delete intelligence;
+}
+
+char* player_c::get_name()
+{
+  return get_AI_name(playertype);
+}
+
+void  player_c::pt_next()
+{
+  playertype = (playertype+1) % pt_enum_end;
+  playing = (playertype != 0);
+}
+
+void  player_c::pt_prev()
+{
+  playertype = (playertype-1) % pt_enum_end;
+  playing = (playertype != 0);
+}
+
+void  player_c::go_left( bool force)
+{
+  if( playertype != pt_human && !force )
+    return;
+  
+  winkel = (winkel + 1) % DEF_WMAX ;
+  winkel_changed = +1 ; 
+}
+
+void  player_c::go_right(bool force)
+{
+  if( playertype != pt_human && !force )
+    return;
+
+  winkel = (winkel - 1) % DEF_WMAX ;
+  winkel_changed = -1 ;
 }
 
 void  player_c::initialize( float x, float y, int id) 
 {
+  //
+  //  Initialize AI if used?
+  //
+  if(intelligence != NULL)
+  {
+    std::cout << "Killing AI at "<< id << std::endl ;
+    delete intelligence;
+    intelligence = NULL;
+  }
+  
+  if(playertype == pt_ai_distances)
+  {
+    std::cout << "Loading AI at "<< id << std::endl ;
+    intelligence = new AI_basic;
+  }
+  
+  //
+  //  Initialize player 
+  //
   if(t_start)
   {
     trailobj* t_temp ;
@@ -62,6 +148,7 @@ void  player_c::initialize( float x, float y, int id)
   disappear = 50 ;
 
   t_current = t_start;
+  t_start->next = NULL;
   this->id = id ;
 }
 void  player_c::set_color(  float r, float g, float b)
@@ -81,12 +168,38 @@ void  player_c::gl_color(float alpha)
 }
 
 
-void  player_c::render_go_step()
+void  player_c::render_go_step(player_c* players)
 {
   alive = !dead ;
 
   if( isalive() ) 
   {
+    // AI if present
+    if(intelligence != NULL)
+    {
+//      std::cout << "AI Processing..." << std::endl ;
+
+      trailobj* tobs[6];
+      
+      for(int i=0;i<6;i++)
+        tobs[i] = players[i].get_t_start();
+
+//      std::cout << "AI Patching" << std::endl ;
+
+      intelligence->patch_pointers(tobs, t_current );
+      
+//      std::cout << "AI Calculating" << std::endl ;
+
+      intelligence->calculate();
+      
+//      std::cout << "AI Steering" << std::endl ;
+
+      winkel          = ( winkel + intelligence->steer() ) % DEF_WMAX ;
+      winkel_changed  =            intelligence->steer() ;
+      
+//      std::cout << "AI done" << std::endl ;
+
+    }
     // Go a step...
   
     trailobj* step = new trailobj;
