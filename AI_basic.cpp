@@ -57,7 +57,6 @@ void  AI_basic::calculate()
       dc->calc_tob(tob);
       tob = tob->next ;
     }
-
   }
 
   
@@ -70,18 +69,19 @@ void  AI_basic::calculate()
     {
       a = 0 ;
     }
+    else
     if(i == 4)
     {
       a = 1 ;
     }    
-    if(i > 4)
+    else
     {
       a = 2 ;
     }
     decide[a] += dc->get_part(i) ;
   }
 
-  decide[4] *= 4 ;
+  decide[1] *= 4 ;
   
   int randomchoice = get_random_choice();
   decide[1-randomchoice] *= 1.0005f;
@@ -89,8 +89,8 @@ void  AI_basic::calculate()
 //  std::cout << decide[0] << " "  << decide[1] << " " << decide[2] << std::endl;
 
 //  printf("  %3f  %3f  %3f  \n" , decide[0] , decide[1] , decide[2] );
-  decide[0] += ( 300 - decide[2] ) / 20.0f ;
-  decide[2] += ( 300 - decide[0] ) / 20.0f ;
+  decide[0] += ( 400 - decide[2] ) / 20.0f ;
+  decide[2] += ( 400 - decide[0] ) / 20.0f ;
 
   
   if( decide[0] > decide[1] && decide[0] > decide[2] )

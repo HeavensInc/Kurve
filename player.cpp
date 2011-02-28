@@ -107,7 +107,7 @@ void  player_c::initialize( float x, float y, int id)
   if(playertype == pt_ai_distances)
   {
     std::cout << "Loading AI at "<< id << std::endl ;
-    intelligence = new AI_basic;
+    intelligence = new AI_basic ; // AI_basic
   }
   
   //
@@ -184,22 +184,22 @@ void  player_c::render_go_step(player_c* players)
       for(int i=0;i<6;i++)
         tobs[i] = players[i].get_t_start();
 
-      std::cout << "AI Patching" << std::endl ;
+//      std::cout << "AI Patching" << std::endl ;
 
       intelligence->patch_pointers(tobs, t_current );
       
-      std::cout << "AI Calculating" << std::endl ;
+//      std::cout << "AI Calculating" << std::endl ;
 
       intelligence->calculate();
       
-      std::cout << "AI Steering" << std::endl ;
+//      std::cout << "AI Steering" << std::endl ;
 
-      intelligence->steer();
+//      intelligence->steer();
 
       winkel          = ( winkel + intelligence->steer() ) % DEF_WMAX ;
       winkel_changed  =            intelligence->steer() ;
       
-      std::cout << "AI done" << std::endl ;
+//      std::cout << "AI done" << std::endl ;
 
     }
     // Go a step...
