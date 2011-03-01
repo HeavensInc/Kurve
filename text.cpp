@@ -210,13 +210,13 @@ void __text::gamemenu(player_c* players , float alpha)
     if(players[i].playing)
       { players[i].gl_color(alpha); }
     else
-      { players[i].gl_color( DEF_ALPHA * alpha); }
+      { players[i].gl_color( DEF_ALPHAM * alpha); }
 
     char displaystring[256];    
 
     sprintf(displaystring, "Player %d  ( %s )  %s" , i+1, get_steer_string(i), players[i].get_name() );
     
-    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * i + 40) ;
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (5-i) + 40) ;
   }
 }
 /*
@@ -389,7 +389,7 @@ void __text::scores(player_c* players, float alpha)
       if(players[i].isalive())
         players[i].gl_color(alpha);
       else 
-        players[i].gl_color( DEF_ALPHA * alpha);
+        players[i].gl_color( DEF_ALPHAM * alpha);
 
 
       sprintf(string, "P%d %02d", i+1 , players[i].score ) ;
@@ -398,7 +398,7 @@ void __text::scores(player_c* players, float alpha)
     else
     {
 
-      glColor4f(0.5f , 0.5f , 0.5f , DEF_ALPHA * alpha) ;
+      glColor4f(0.5f , 0.5f , 0.5f , DEF_ALPHAM * alpha) ;
       sprintf(string, "P%d --", i+1 ) ;
       draw(string , i * 70 + 20 , 5) ;
     }

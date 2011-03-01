@@ -1,9 +1,20 @@
 #include <math.h>
 #include <iostream>
 
+#include <SDL/SDL.h>
+
 #include "collision.h"
+
+
 int main()
 {
+  std::cout<< " SDL_Delay (  0 ) " << std::endl;
+  SDL_Delay ( 0 ) ;
+  std::cout<< " SDL_Delay ( -1 ) " << std::endl;
+  SDL_Delay ( -1 ) ;
+  std::cout<< " SDL_Delays done " << std::endl;
+        
+
   distcheck dc(30);
   trailobj tob[6];
   

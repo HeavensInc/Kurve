@@ -19,7 +19,8 @@
 #define DEF_DEADFADE    30
 #define DEF_MENUFADE  0.1f
 #define DEF_NUMFADE    100
-#define DEF_ALPHA    0.45f
+#define DEF_ALPHA    0.75f
+#define DEF_ALPHAM   0.40f
 
 
 struct __globals

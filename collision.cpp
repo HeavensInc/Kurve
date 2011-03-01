@@ -230,20 +230,21 @@ void distcheck::calc_walls()
 
 void distcheck::calc_tob(trailobj* tob)
 {
-  if(tob->type > 0) return;
+  if(tob->type > 0 && tob->status < 25) return;
 
   float dir;
   float t_dist;
 
   
-  float vecx = tob->x1 - x ;
-  float vecy = tob->y1 - y ;
+  float vecx = (tob->x1+tob->x2) / 2 - x ;
+  float vecy = (tob->y1+tob->y2) / 2 - y ;
 
   dir = get_direction( vecx , vecy );
-  t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 25? 0.25f : 1.0f);
 
   if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
   {
+    t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 20? 0.25f : 1.0f);
+
     int t_part = parts / 2.0f + dir * parts / M_PI ;
     if(t_part >= parts) t_part = parts-1;
        
@@ -251,6 +252,7 @@ void distcheck::calc_tob(trailobj* tob)
   }
 
 
+/*
   vecx = tob->x2 - x ;
   vecy = tob->y2 - y ;
 
@@ -264,7 +266,9 @@ void distcheck::calc_tob(trailobj* tob)
     
     min_dist[t_part] = (min_dist[t_part] < t_dist ? min_dist[t_part] : t_dist) ;
   }
-  
+
+*/
+
 }
 
 float  distcheck::get_part(int dir)

@@ -274,17 +274,23 @@ void  player_c::render_trail_display_fade( float alpha , float white )
 
   do
   {
+    float flash = ( t_draw->status - 3 ) / 40.0f ;
+    flash = (flash < 0 || flash > 1 ? 1 : flash ) ;
+    flash = (t_draw->status == 0 ? 0 : flash ) ;   
+    
+    float alpha2 = alpha * (t_draw->status == 0 ? 0.66f : 1 ) ;   
+    
     if(t_draw->type == 0)
       glColor3f(
-          ( ( t_draw->status % 10 ) / 10.0f + color_trail[0] )  * alpha  + white ,
-          ( ( t_draw->status % 10 ) / 10.0f + color_trail[1] )  * alpha  + white ,
-          ( ( t_draw->status % 10 ) / 10.0f + color_trail[2] )  * alpha  + white
+          ( flash + color_trail[0] )  * alpha2  + white ,
+          ( flash + color_trail[1] )  * alpha2  + white ,
+          ( flash + color_trail[2] )  * alpha2  + white
              );
     else
       glColor3f(
-          ( ( t_draw->status % 10 ) / 10.0f + color_gap[0] )  * alpha  + white ,
-          ( ( t_draw->status % 10 ) / 10.0f + color_gap[1] )  * alpha  + white ,
-          ( ( t_draw->status % 10 ) / 10.0f + color_gap[2] )  * alpha  + white
+          ( flash + color_gap[0] )  * alpha2  + white ,
+          ( flash + color_gap[1] )  * alpha2  + white ,
+          ( flash + color_gap[2] )  * alpha2  + white
              );
 
     glVertex2f( t_draw->x1 , t_draw->y1 ) ;

@@ -24,7 +24,7 @@ kurve: $(OBJ) $(HDR) $(DEF)
 	$(CC) $(CFLAGS) -o kurve $(OBJ) $(LIBS)
 	
 test: testsuite.o 
-	$(CC) $(CFLAGS) -o test testsuite.o constants.o collision.o
+	$(CC) $(CFLAGS) -o test testsuite.o constants.o collision.o -lSDL
 
 %.o: %.cpp $(HDR) $(DEF) 
 	$(CC) $(CFLAGS) -c $<
@@ -45,7 +45,7 @@ cross: $(W32) $(HDR) $(DEF)
 
 
 %.w32: %.cpp $(HDR) $(DEF) 
-	$(W32CC) -o $@ -c $<
+	$(W32CC) $(W32CF) -o $@ -c $<
 	
 	
 	

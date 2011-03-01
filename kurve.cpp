@@ -45,13 +45,20 @@ int main(int argc, char *argv[])
   prep_loop    = false;
   game_loop    = false;
   post_loop    = false;
-
+/*
   player[0].set_color( 1.0f , 0.0f , 0.0f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
   player[2].set_color( 1.0f , 1.0f , 0.0f );
   player[3].set_color( 0.0f , 1.0f , 0.0f );
   player[4].set_color( 0.0f , 0.5f , 1.0f );
   player[5].set_color( 1.0f , 0.0f , 1.0f );
+*/
+  player[0].set_color( 1.0f , 0.25f , 0.25f );
+  player[1].set_color( 1.0f , 0.5f , 0.0f );
+  player[2].set_color( 0.85f , 0.85f , 0.0f );
+  player[3].set_color( 0.25f , 1.0f , 0.25f );
+  player[4].set_color( 0.0f , 0.5f , 1.0f );
+  player[5].set_color( 0.75f , 0.0f , 0.75f );
 
   //SDL-Start
   //
@@ -75,6 +82,8 @@ int main(int argc, char *argv[])
   {
     gl_setup(true);
 
+    std::cout << "MAINLOOP" << std::endl ;
+    
     while ( game_running && menu_loop )
     {
       staticwait(20);
@@ -164,9 +173,13 @@ void  gl_setup(bool resize)
 {
   if(resize)
   {
+    glViewport(0, 0, global.sdl_width, global.sdl_height);
     global.gl_width  = global.sdl_width;
     global.gl_height = global.sdl_height;
   }
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
 
   glOrtho(0.0f, global.gl_width , 0.0f, global.gl_height , -1.0f, 1.0f);
   glMatrixMode(GL_MODELVIEW);
@@ -324,7 +337,7 @@ int   loop_mainmenu()
 
 
 int         loop_initgame()
-{
+{ 
   SDL_Event event;
   while(SDL_PollEvent(&event))
   {
@@ -337,14 +350,21 @@ int         loop_initgame()
   static int status = 0;
   if(status == 0)
   {
+    gl_setup(true);
+    
     global.livecount = global.playercount ;
 
     float a[6];
     float b[6];
     int tries=0;    
     int i=0;
+
+    bool skip= false;
+
     while(i < 6)
     {
+      skip=false;
+      
       a[i] = rand() % (global.gl_height - 2 * DEF_BDIST) + DEF_BDIST ;
       b[i] = rand() % (global.gl_width  - 2 * DEF_BDIST) + DEF_BDIST ;
       
@@ -355,15 +375,20 @@ int         loop_initgame()
           float dist= sqrt( (b[k] - b[i]) * (b[k] - b[i])  +  (a[k] - a[i]) * (a[k] - a[i])) ;
           if(dist < DEF_BDIST && tries < 10)
           {
+            skip=true;
             tries++;
-            i--;
-            break; //inner for loop
+            break; //inner 'for'-loop
           }
         }
-      }      
-      player[i].initialize(b[i],a[i],i);
-      i++;
-      tries = 0 ;
+      }
+      
+      if(!skip)
+      {
+        player[i].initialize(b[i],a[i],i);
+        i++;
+        tries = 0 ;
+      }
+      
     }
     status++;
   }
@@ -414,7 +439,7 @@ int         loop_initgame()
   {
     steps  = 0;
     status = 0;
-    for(int i=0;i<6;i++)
+/*    for(int i=0;i<6;i++)
     {
       trailobj* t_draw;
       t_draw = player[i].get_t_start();
@@ -424,7 +449,7 @@ int         loop_initgame()
         t_draw = t_draw->next ;
       }
     }
-
+*/
     return 1;
   }
 
@@ -490,19 +515,22 @@ int         loop_run_game()
 
       for(int k=0;k<6;k++)
       {      
+        if(check) break;
+        
         if( !player[k].playing ) continue ;
         
         trailobj* t_draw = player[k].get_t_start() ;
         trailobj* t_end  = player[k].get_t_current() ;
         
         
-        if(i == k) t_end = t_end->prev->prev;
+        //Prevent killing from behind. not only random suicide.. if(i == k) 
+        t_end = t_end->prev->prev;
         
         while( t_draw != t_end && !check)
         {
           t_draw = t_draw->next ;
 
-          if(t_draw->type == 0 )
+          if(t_draw->type == 0 && !(t_draw->prev == NULL || t_draw->prev->type == 1))
           {
             check = check || player[i].collide_contains_point_head(t_draw->x1 , t_draw->y1);
             check = check || player[i].collide_contains_point_head(t_draw->x2 , t_draw->y2);
@@ -523,9 +551,22 @@ int         loop_run_game()
         {
           check = true;
         }
-
         
-        if(check && t_draw->status > 0) killer = k ;
+        if(check)
+          if(t_draw->status > 0)
+            killer = k ;
+        
+        if(NULL != t_draw)
+        {
+          t_draw->status = 100;
+
+          if(NULL != t_draw->next)
+             t_draw->next->status = 100;
+          if(NULL != t_draw->prev)
+             t_draw->prev->status = 100;
+        }
+
+
       }
   
       if( check )

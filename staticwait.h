@@ -7,15 +7,17 @@ extern void staticwait(int msec)
 {
   static Uint32 timing = 0 ;
 
-  if(timing < SDL_GetTicks() - msec)
+  int ticks = SDL_GetTicks() ;
+
+  if(timing < ticks - msec)
   {
-    timing = SDL_GetTicks();
+    timing = ticks;
     return;
   }
 
   timing += msec;
 
-  SDL_Delay( timing -  SDL_GetTicks() );
+  SDL_Delay( timing - ticks );
 
   return;
 }
