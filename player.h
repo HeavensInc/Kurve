@@ -8,12 +8,15 @@
 
 #include "AI_base.h"
 #include "AI_basic.h"
+#include "AI_fine.h"
 
 enum
 {
   pt_nothing,
   pt_human,
-  pt_ai_distances,
+  pt_ai_fine,         // Easy
+  pt_ai_distances,    // Medium
+                      // Hard / Areas / Placeholder
   
   pt_enum_end
 }

@@ -12,7 +12,7 @@ W32LIBS = -static-libgcc -static-libstdc++ -lSDL -lopengl32
 UNUSED  =  -lSDLmain  -lmingw32
 
 DEF = including.h staticwait.h
-HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h
+HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h AI_fine.h
 SRC = kurve.cpp $(HDR:%.h=%.cpp)
 OBJ = $(SRC:%.cpp=%.o)
 W32 = $(SRC:%.cpp=%.w32)

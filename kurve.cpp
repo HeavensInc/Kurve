@@ -530,7 +530,7 @@ int         loop_run_game()
         {
           t_draw = t_draw->next ;
 
-          if(t_draw->type == 0 && !(t_draw->prev == NULL || t_draw->prev->type == 1))
+          if(t_draw->type == 0)
           {
             check = check || player[i].collide_contains_point_head(t_draw->x1 , t_draw->y1);
             check = check || player[i].collide_contains_point_head(t_draw->x2 , t_draw->y2);

@@ -5,7 +5,7 @@
 
 extern void staticwait(int msec)
 {
-  static Uint32 timing = 0 ;
+  static int timing = 0 ;
 
   int ticks = SDL_GetTicks() ;
 

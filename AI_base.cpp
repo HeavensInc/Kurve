@@ -8,6 +8,13 @@ AI_base::AI_base()
     player_tstart[i]  = NULL  ;
     player_playing[i] = false ;
   }
+  
+  random_choice = rand() % 3 - 1 ;
+  random_keep   = 5 ;
+  
+  random_do_choose = 0 ;        
+  random_do_keep   = 0 ;
+
 }
 
 void  AI_base::patch_pointers(trailobj* pointers[6] , trailobj* current)
@@ -28,15 +35,37 @@ void  AI_base::patch_pointers(trailobj* pointers[6] , trailobj* current)
 
 int   AI_base::get_random_choice()
 {
-  static int choice = rand() % 3 - 1 ;
-  static int keep   = 5 ;
-  
-  if(keep < 1)
+  if(random_keep < 1)
   {
-    choice = rand() % 3 - 1 ;
-    keep   = rand() % 3 + 4 ; // 4..6
+    random_choice = rand() % 10 ;
+    if(random_choice==0) random_choice = -1 ;
+    else
+    if(random_choice==1) random_choice = +1 ;
+    else
+        random_choice = 0 ;
+        
+    random_keep   = rand() % 10 + 10 ; // 4..6
   }
   
-  keep--;
-  return choice;
+  random_do_keep--;
+  random_keep--;
+  return random_choice;
+}
+
+int   AI_base::choose_something()
+{
+  if(random_do_keep < 1)
+  {
+    random_do_choose = rand() % 2 ;
+    if(random_do_choose==0) random_do_choose = -1 ;
+    else
+    if(random_do_choose==1) random_do_choose = +1 ;
+    else
+        random_do_choose = 0 ;
+        
+    random_do_keep   = 40 ;
+  }
+  
+  random_do_keep--;
+  return random_do_choose;
 }

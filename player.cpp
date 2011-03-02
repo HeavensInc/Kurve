@@ -4,7 +4,10 @@
 
 const char AI_name_nothing[] = " --- " ;
 const char AI_name_human[]   = "Playing" ;
-const char AI_name_basic[]   = "AI-Dist" ;
+const char AI_name_basic[]   = "AI-Medium (Dist 9)" ;
+const char AI_name_fine[]    = "AI-Easy   (Dist 3)" ;
+
+const char AI_name_areas[]    = "AI-Hopefully Hard (Areas)" ;
 
 const char AI_name_unknown[] = "AI-Whatever" ;
 const char AI_name_error[]   = "[ E R R ]" ;
@@ -22,6 +25,8 @@ char* get_AI_name(int pt)
     return (char*)AI_name_human ;
   case pt_ai_distances:
     return (char*)AI_name_basic ;
+  case pt_ai_fine:
+    return (char*)AI_name_fine ;
     
   default:
     return (char*)AI_name_unknown ;
@@ -106,8 +111,13 @@ void  player_c::initialize( float x, float y, int id)
   
   if(playertype == pt_ai_distances)
   {
-    std::cout << "Loading AI at "<< id << std::endl ;
+    std::cout << "Loading AI-basic at "<< id << std::endl ;
     intelligence = new AI_basic ; // AI_basic
+  }
+  if(playertype == pt_ai_fine)
+  {
+    std::cout << "Loading AI-fine at "<< id << std::endl ;
+    intelligence = new AI_fine ; // AI_fine
   }
   
   //
@@ -241,7 +251,7 @@ void  player_c::render_go_step(player_c* players)
     disappear--;
     if(disappear == 0)
     {
-      disappear = 5 ;
+      disappear = 2 ;
       t_start = t_start->next ;
       delete t_start->prev ;
       t_start->prev = NULL ;
@@ -254,7 +264,7 @@ void  player_c::render_trail_display()
 {
   if(dead)
   {
-    render_trail_display_fade(0.5f , deathfade / 1.5f / DEF_DEADFADE );
+    render_trail_display_fade(0.8f , deathfade / 1.5f / DEF_DEADFADE );
     deathfade = ( deathfade > 0 ? deathfade - 1 : 0 ) ;
   }else{
     render_trail_display_fade(1.0f ,              0.0f);
@@ -333,7 +343,7 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
   {
     t_draw = t_draw->next ;
 
-    if(t_draw->type == 0 )
+    if(t_draw->type == 0 && !(t_draw->prev == NULL || t_draw->prev->type > 0))
     {
       if(tc.check(t_draw))
       {

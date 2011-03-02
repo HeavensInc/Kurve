@@ -1,7 +1,7 @@
-#include "AI_basic.h"
+#include "AI_fine.h"
 /*
 
-class AI_basic : public AI_base
+class AI_fine : public AI_base
 {
 private:
   int   decision;
@@ -12,24 +12,25 @@ public: // Intelligence
 }
 
 */
-AI_basic::AI_basic()
+AI_fine::AI_fine()
 {
-  dc = new distcheck(9);
+  split_into = 3;
+  dc = new distcheck(split_into);
   decision = 0;
 }
 
-AI_basic::~AI_basic()
+AI_fine::~AI_fine()
 {
   delete dc;
 }
 
-int   AI_basic::steer()
+int   AI_fine::steer()
 {
 //  std::cout << "AI going " << decision << std::endl ;
   return decision;
 }
 
-void  AI_basic::calculate()
+void  AI_fine::calculate()
 {
   if(tob_current == NULL) return;
 
@@ -62,15 +63,15 @@ void  AI_basic::calculate()
   
   float decide[3] = { 0.0f , 0.0f , 0.0f};
   
-  for(int i=0; i<9; i++)
+  for(int i=0; i < split_into; i++)
   {
     int a;
-    if(i < 3)
+    if(i < split_into/3)
     {
       a = 0 ;
     }
     else
-    if(i > 5)
+    if(i > split_into*2/3-1 )
     {
       a = 2 ;
     }    
@@ -86,24 +87,26 @@ void  AI_basic::calculate()
 //  std::cout << decide[0] << " "  << decide[1] << " " << decide[2] << std::endl;
 
 //  printf("  %3f  %3f  %3f  \n" , decide[0] , decide[1] , decide[2] );
-  float temp = ( 300 - decide[2] ) / 5.0f * (decide[0]/300);
-  decide[2] += ( 300 - decide[0] ) / 5.0f * (decide[2]/300);
+  float temp = ( split_into/3*100 - decide[2] ) / 20.0f ;
+  decide[2] += ( split_into/3*100 - decide[0] ) / 20.0f ;
   decide[0] += temp;
 
   int randomchoice = get_random_choice();
 //  if( randomchoice != 0 )
-    decide[1-randomchoice] *= 1.1f;
+    decide[1-randomchoice] *= 1.0001f;
+
 
   // close area decision
   bool this_was_close = false;
-  if(dc->get_part(4) < 4 || dc->get_part(5) < 30 || dc->get_part(6) < 4 )// || decide[0] < 10 || decide[2] < 10)
+/*
+  if(dc->get_part(4) < 4 || dc->get_part(5) < 20 || dc->get_part(6) < 4 )// || decide[0] < 10 || decide[2] < 10)
   {
     this_was_close = true;
     decide[0] = dc->get_part(4) ;
     decide[1] = dc->get_part(5) ;
     decide[2] = dc->get_part(6) ;
   }
-
+*/
 
   if( decide[0] > decide[1] && decide[0] > decide[2])
   {

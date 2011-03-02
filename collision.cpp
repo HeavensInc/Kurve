@@ -191,32 +191,35 @@ void distcheck::calc_walls()
   {
     dist[i] = 100.0f; //maxdist
     
-    float vecx = cos( direction + M_PI * ( +0.5f +1.0f * i / parts ) );
-    float vecy = sin( direction + M_PI * ( +0.5f +1.0f * i / parts ) );
+    float vecx = cos( direction + M_PI * ( -0.5f +1.0f * i / parts ) );
+    float vecy = sin( direction + M_PI * ( -0.5f +1.0f * i / parts ) );
 
+    float t_dist ;
+    float dist_helper = -5 ;
+    
     if(vecy != 0.0f)
     {
-       float t_dist ;
 
-       t_dist = y / vecy ;
-       if(t_dist < dist[i] && t_dist > 0.0f)
-          dist[i] = t_dist;
 
-       t_dist = ( y - global.gl_height + DEF_SCORES ) / vecy ;
+       t_dist = -y / vecy ;
        if(t_dist < dist[i] && t_dist > 0.0f)
-          dist[i] = t_dist;
+          dist[i] = t_dist +dist_helper;
+
+       t_dist = -( y - global.gl_height + DEF_SCORES ) / vecy ;
+       if(t_dist < dist[i] && t_dist > 0.0f)
+          dist[i] = t_dist +dist_helper;
           
     }
     
     if(vecx != 0.0f)
     {
-       float t_dist = x / vecx ;
+       t_dist = -x / vecx ;
        if(t_dist < dist[i] && t_dist > 0.0f)
-          dist[i] = t_dist;
+          dist[i] = t_dist +dist_helper;
           
-       t_dist = ( x - global.gl_width ) / vecx ;
+       t_dist = -( x - global.gl_width ) / vecx ;
        if(t_dist < dist[i] && t_dist > 0.0f)
-          dist[i] = t_dist;
+          dist[i] = t_dist +dist_helper;
 
     }
   }
@@ -230,20 +233,35 @@ void distcheck::calc_walls()
 
 void distcheck::calc_tob(trailobj* tob)
 {
-  if(tob->type > 0 && tob->status < 25) return;
+  float modifier =  1.0f ;
+  float mod_add  = -1.0f ;
+
+  if( tob->status > 25 )
+  {
+    modifier *= 0.5;
+//    mod_add  -= 10;
+  }
 
   float dir;
   float t_dist;
 
-  
   float vecx = (tob->x1+tob->x2) / 2 - x ;
   float vecy = (tob->y1+tob->y2) / 2 - y ;
+
+//  float vecx = (tob->x1) - x ;
+//  float vecy = (tob->y1) - y ;
 
   dir = get_direction( vecx , vecy );
 
   if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
   {
-    t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 20? 0.25f : 1.0f);
+    if( tob->type >  0 && dir > -0.4f*M_PI && dir < 0.4f*M_PI)
+    {
+      modifier *=  4 ;
+      mod_add  += 10 ;
+    }
+  
+    t_dist = sqrt( vecx*vecx + vecy*vecy ) * modifier + mod_add;
 
     int t_part = parts / 2.0f + dir * parts / M_PI ;
     if(t_part >= parts) t_part = parts-1;
@@ -257,7 +275,7 @@ void distcheck::calc_tob(trailobj* tob)
   vecy = tob->y2 - y ;
 
   dir = get_direction( vecx , vecy );
-  t_dist = sqrt( vecx*vecx + vecy*vecy ) * (tob->status > 25? 0.25f : 1.0f);
+  t_dist = sqrt( vecx*vecx + vecy*vecy ) * modifier + mod_add;
 
   if(dir > -0.5f*M_PI && dir < 0.5f*M_PI)
   {
@@ -266,7 +284,6 @@ void distcheck::calc_tob(trailobj* tob)
     
     min_dist[t_part] = (min_dist[t_part] < t_dist ? min_dist[t_part] : t_dist) ;
   }
-
 */
 
 }
