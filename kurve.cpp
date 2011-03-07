@@ -22,7 +22,8 @@ player_c  player[6];
 void	  check_collisions();
 void	  initialize_game();
 
-void      gl_init(int w, int h);
+//void      gl_init(int w, int h);
+void      gl_init(bool fullscreen = false , int w = 0 , int h = 0 );
 void      gl_setup(bool resize);
 
 bool      commonevent(SDL_Event* event);
@@ -65,13 +66,27 @@ int main(int argc, char *argv[])
   //
 
   SDL_Init(SDL_INIT_VIDEO);
-  {
+  
+  { // Init-time variables should not remain .. :)
     char caption[32];
     sprintf( caption , "Kurve %s" , VERSION );
     SDL_WM_SetCaption( (char*)caption , NULL );
+
+    global.fullscreen = false;
+    
+    SDL_Surface* screen;
+    screen = SDL_SetVideoMode(0, 0, 16 , SDL_OPENGL | SDL_FULLSCREEN );   
+    
+    global.display_width  = screen->w;
+    global.display_height = screen->h;
+    
+    global.window_width  = (screen->w > 900 || screen->w < 1 ? 800 : screen->w - 100 );
+    global.window_height = (screen->h > 700 || screen->h < 1 ? 600 : screen->h - 100 );
+    
+    std::cout << screen->w << "x" << screen->h << "\n" ;
   }
 
-  gl_init(800, 600);
+  gl_init(false);
   gl_setup(true);
 
   // Main-Loops
@@ -84,6 +99,8 @@ int main(int argc, char *argv[])
 
     std::cout << "MAINLOOP" << std::endl ;
     
+    SDL_ShowCursor( SDL_ENABLE ); 
+
     while ( game_running && menu_loop )
     {
       staticwait(20);
@@ -95,6 +112,8 @@ int main(int argc, char *argv[])
         menu_loop = false;
       }
     }
+
+    SDL_ShowCursor( SDL_DISABLE ); 
 
     while ( game_running && prep_loop )
     {
@@ -149,61 +168,97 @@ int main(int argc, char *argv[])
 }
 
 
-void  gl_init( int w , int h )
+//void  gl_init( int w , int h )
+void  gl_init( bool fullscreen , int w , int h )
 {
-  SDL_SetVideoMode( w , h ,32,SDL_OPENGL|SDL_RESIZABLE);
+  if(fullscreen)
+  {
+    w = global.display_width ;
+    h = global.display_height ;
+    SDL_SetVideoMode( w , h , 32 , SDL_OPENGL | SDL_FULLSCREEN);
+  }else{
+    if(w == 0 || h == 0)
+    {
+      w = global.window_width  ;
+      h = global.window_height ;    
+    }else{
+      global.window_width  = w;
+      global.window_height = h;
+    }
+    SDL_SetVideoMode( w , h , 32 , SDL_OPENGL | SDL_RESIZABLE );
+  }
 
   global.sdl_width  = w ;
   global.sdl_height = h ;
   
-  glClearColor(0, 0, 0, 0);
-  glClearDepth(1.0f);
-  glViewport(0, 0, global.sdl_width, global.sdl_height);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA , GL_ONE);
-
   text.load();
+  gl_setup(false);
+
 }
 
 void  gl_setup(bool resize)
 {
+  glViewport(0, 0, global.sdl_width, global.sdl_height);
+
   if(resize)
   {
-    glViewport(0, 0, global.sdl_width, global.sdl_height);
     global.gl_width  = global.sdl_width;
     global.gl_height = global.sdl_height;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, global.gl_width , 0.0f, global.gl_height , -1.0f, 1.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+  }else{
+
+    glClearColor(0, 0, 0, 0);
+    glClearDepth(1.0f);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA , GL_ONE);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glOrtho(0.0f, global.gl_width , 0.0f, global.gl_height , -1.0f, 1.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
   }
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  glOrtho(0.0f, global.gl_width , 0.0f, global.gl_height , -1.0f, 1.0f);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
 }
 
 bool  commonevent(SDL_Event* event)
 {
-    switch(event->type)
-    {
-      case SDL_VIDEORESIZE:
-        gl_init( event->resize.w , event->resize.h ) ;
-        gl_setup(menu_loop) ;
-        break;
+  static Uint8 *keystate = SDL_GetKeyState(NULL);
+  static bool  multiblock = false ;
+  if( (keystate[SDLK_LALT] || keystate[SDLK_RALT]) && keystate[SDLK_RETURN] && !multiblock)
+  {
+    global.fullscreen = !global.fullscreen ;
+    gl_init(global.fullscreen);
+    gl_setup(menu_loop) ;
+    
+    multiblock = true;
+  }else{
+    multiblock = (keystate[SDLK_LALT] || keystate[SDLK_RALT]) && keystate[SDLK_RETURN] ;
+  }
 
-      case SDL_QUIT:
-        game_running = false;
-        break;
-       
-      default:
-        return false;
-        break;
-    }
-    return true;
+  switch(event->type)
+  {
+    case SDL_VIDEORESIZE:
+      gl_init( global.fullscreen , event->resize.w , event->resize.h ) ;
+      gl_setup(menu_loop) ;
+      break;
+
+    case SDL_QUIT:
+      game_running = false;
+      break;
+     
+    default:
+      return false;
+      break;
+  }
+  return true;
 }
 
 int   loop_mainmenu()

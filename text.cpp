@@ -219,74 +219,7 @@ void __text::gamemenu(player_c* players , float alpha)
     draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (5-i) + 40) ;
   }
 }
-/*
-  if(players[0].playing)
-  {
-    players[0].gl_color(alpha);
-    draw( (char*)"Player 1  ( 1 Q )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 3 ) ;
-  }
-  else
-  {
-     players[0].gl_color( DEF_ALPHA * alpha);
-     draw( (char*)"Player 1  ( 1 Q )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 3 ) ;
-  }
 
-  if(players[1].playing)
-  {
-    players[1].gl_color(alpha);
-    draw( (char*)"Player 2  ( X C )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 2 ) ;
-  }
-  else
-  {
-     players[1].gl_color( DEF_ALPHA * alpha );
-     draw( (char*)"Player 2  ( X C )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 2 ) ;
-  }
-
-  if(players[2].playing)
-  {
-    players[2].gl_color(alpha);
-    draw( (char*)"Player 3  ( N M )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 1 ) ;
-  }
-  else
-  {
-     players[2].gl_color( DEF_ALPHA * alpha);
-     draw( (char*)"Player 3  ( N M )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 1 ) ;
-  }
-
-  if(players[3].playing)
-  {
-    players[3].gl_color(alpha);
-    draw( (char*)"Player 4  ( < > )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 0 ) ;
-  }
-  else
-  {
-     players[3].gl_color( DEF_ALPHA * alpha);
-     draw( (char*)"Player 4  ( < > )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * 0 ) ;
-  }
-
-  if(players[4].playing)
-  {
-    players[4].gl_color(alpha);
-    draw( (char*)"Player 5  ( \x01 \x02 )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (-1) ) ;
-  }
-  else
-  {
-     players[4].gl_color( DEF_ALPHA * alpha);
-     draw( (char*)"Player 5  ( \x01 \x02 )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (-1) ) ;
-  }
-
-  if(players[5].playing)
-  {
-    players[5].gl_color(alpha);
-    draw( (char*)"Player 6  ( + - )  INGAME" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (-2) ) ;
-  }
-  else
-  {
-     players[5].gl_color( DEF_ALPHA * alpha);
-     draw( (char*)"Player 6  ( + - )" , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (-2) ) ;
-  }
-}
-*/
 
 void __text::helper(int select, bool reset, bool fade)
 {
@@ -372,12 +305,35 @@ void __text::scores(player_c* players, float alpha)
   glVertex3f(global.gl_width , global.gl_height -23 , 0.0f);
   glVertex3f(global.gl_width , global.gl_height     , 0.0f);
 
+
   glColor4f(1.0f, 1.0f, 1.0f,0.20f * alpha);
-  glVertex3f(global.gl_width , global.gl_height -23   , 0.0f);
-  glVertex3f(	        	0.0f , global.gl_height -23   , 0.0f);
-  glColor4f(1.0f, 1.0f, 1.0f,0.40f);
-  glVertex3f(       		0.0f , global.gl_height -25   , 0.0f);
-  glVertex3f(global.gl_width , global.gl_height -25   , 0.0f);
+  glVertex3f(global.gl_width      , global.gl_height -23   , 0.0f);
+  glVertex3f(	        	0.0f      , global.gl_height -23   , 0.0f);
+  glColor4f(1.0f, 1.0f, 1.0f,0.50f * alpha);
+  glVertex3f(       		0.0f      , global.gl_height -25   , 0.0f);
+  glVertex3f(global.gl_width      , global.gl_height -25   , 0.0f);
+
+  glColor4f(1.0f, 1.0f, 1.0f,0.20f * alpha);
+  glVertex3f(global.gl_width      ,                 2.0f   , 0.0f);
+  glVertex3f(	        	0.0f      ,                 2.0f   , 0.0f);
+  glColor4f(1.0f, 1.0f, 1.0f,0.50f * alpha);
+  glVertex3f(       		0.0f      ,                 0.0f   , 0.0f);
+  glVertex3f(global.gl_width      ,                 0.0f   , 0.0f);
+
+  glColor4f(1.0f, 1.0f, 1.0f,0.20f * alpha);
+  glVertex3f(           2.0f      ,                 0.0f   , 0.0f);
+  glVertex3f(           2.0f      , global.gl_height -23   , 0.0f);
+  glColor4f(1.0f, 1.0f, 1.0f,0.50f * alpha);
+  glVertex3f(	        	0.0f      , global.gl_height -23   , 0.0f);
+  glVertex3f(       		0.0f      ,                 0.0f   , 0.0f);
+  
+  glColor4f(1.0f, 1.0f, 1.0f,0.20f * alpha);
+  glVertex3f(global.gl_width      ,                 0.0f   , 0.0f);
+  glVertex3f(global.gl_width      , global.gl_height -23   , 0.0f);
+  glColor4f(1.0f, 1.0f, 1.0f,0.50f * alpha);
+  glVertex3f(global.gl_width-2.0f , global.gl_height -23   , 0.0f);
+  glVertex3f(global.gl_width-2.0f ,                 0.0f   , 0.0f);
+
 
   glEnd();
 

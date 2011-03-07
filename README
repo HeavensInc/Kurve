@@ -1,18 +1,29 @@
 README
  1  About the game
- 2  Installation instructions
+ 2  Controls
+ 3  Installation instructions
 
 1  About the game
   Kurve (dt: curve) is a snake style game. Your goal is to survive as long as
   possible and to gain the highest score. Kurve is published under GNU/GPLv3.
   See COPYING for details. This game is for 2-6 players, where a player can be
-  either human or an AI. To change the type of a player you have to press one
-  of their buttons. At this point in time there are:
+  either human or an AI.
+
+ 
+2  Controls
+  To change the type of a player you have to press one of their buttons. At
+  this point in time there are:
    - "---"      Not playing
    - "PLAYING"  A human player.
    - "AI-..."   Players controlled by an artificial 'intelligence'
+  In the main menu each players keys are shown behind his 'name'. 
+  Other contols
+    Alt + Return  toggle fullscreen
+    ESC           Return to menu from pause
+                  Quit from menu
+  
 
-2  Installation instructions
+3  Installation instructions
   For Linux / Mac
   If you have installed SDL you can just build your own. Download the source
   and run make. That should work.

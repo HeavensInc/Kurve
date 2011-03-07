@@ -25,13 +25,19 @@
 
 struct __globals
 {
-  int sdl_height;
-  int sdl_width ;
-  int gl_height ;
-  int gl_width  ;
+  int   sdl_height;
+  int   sdl_width ;
+  int   gl_height ;
+  int   gl_width  ;
+  
+  bool  fullscreen ;
+  int   display_height ;
+  int   display_width  ;
+  int   window_height ;
+  int   window_width  ;
 
-  int playercount;
-  int livecount ;
+  int   playercount;
+  int   livecount ;
 };
 
 extern __globals global ;
