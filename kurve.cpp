@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
     global.display_width  = vinfo->current_w ;
     global.display_height = vinfo->current_h ;
 
-    global.display_width  = 800 ;
-    global.display_height = 600 ;
+    global.window_width  = 800 ;
+    global.window_height = 600 ;
   }
 
   gl_init(false);
