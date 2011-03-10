@@ -31,8 +31,10 @@ struct __globals
   int   gl_width  ;
   
   bool  fullscreen ;
+
   int   display_height ;
   int   display_width  ;
+
   int   window_height ;
   int   window_width  ;
 

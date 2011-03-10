@@ -71,19 +71,13 @@ int main(int argc, char *argv[])
     char caption[32];
     sprintf( caption , "Kurve %s" , VERSION );
     SDL_WM_SetCaption( (char*)caption , NULL );
+    
+    const SDL_VideoInfo* vinfo = SDL_GetVideoInfo();
+    global.display_width  = vinfo->current_w ;
+    global.display_height = vinfo->current_h ;
 
-    global.fullscreen = false;
-    
-    SDL_Surface* screen;
-    screen = SDL_SetVideoMode(0, 0, 16 , SDL_OPENGL | SDL_FULLSCREEN );   
-    
-    global.display_width  = screen->w;
-    global.display_height = screen->h;
-    
-    global.window_width  = (screen->w > 900 || screen->w < 1 ? 800 : screen->w - 100 );
-    global.window_height = (screen->h > 700 || screen->h < 1 ? 600 : screen->h - 100 );
-    
-    std::cout << screen->w << "x" << screen->h << "\n" ;
+    global.display_width  = 800 ;
+    global.display_height = 600 ;
   }
 
   gl_init(false);
@@ -173,9 +167,14 @@ void  gl_init( bool fullscreen , int w , int h )
 {
   if(fullscreen)
   {
-    w = global.display_width ;
-    h = global.display_height ;
-    SDL_SetVideoMode( w , h , 32 , SDL_OPENGL | SDL_FULLSCREEN);
+    w = global.display_width;
+    h = global.display_height;
+
+    SDL_Surface* screen;
+    screen = SDL_SetVideoMode( w , h , 0 , SDL_OPENGL | SDL_FULLSCREEN);
+    
+    w = screen->w;
+    h = screen->h;
   }else{
     if(w == 0 || h == 0)
     {
@@ -185,7 +184,13 @@ void  gl_init( bool fullscreen , int w , int h )
       global.window_width  = w;
       global.window_height = h;
     }
-    SDL_SetVideoMode( w , h , 32 , SDL_OPENGL | SDL_RESIZABLE );
+    SDL_Surface* screen;
+    screen = SDL_SetVideoMode( w , h , 0 , SDL_OPENGL | SDL_RESIZABLE );
+
+    global.window_width  = screen->w;
+    global.window_height = screen->h;
+    w = screen->w;
+    h = screen->h;
   }
 
   global.sdl_width  = w ;
