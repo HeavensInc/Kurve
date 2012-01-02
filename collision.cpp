@@ -107,7 +107,7 @@ bool  trailcheck::check(trailobj* tob)
   det = (tob->x1 - tob->x2) * ( y - tob->y2) - (tob->y1 - tob->y2) * ( x - tob->x2);
   if(det > 0) return false;
 
-  tob->keep_this = true ;
+//  tob->keep_this = true ;
 
   return true;
 }
