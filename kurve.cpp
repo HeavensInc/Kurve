@@ -281,6 +281,13 @@ bool  commonevent(SDL_Event* event)
 
 int   loop_mainmenu()
 {
+  player[0].set_color( 1.0f , 0.25f , 0.25f );
+  player[1].set_color( 1.0f , 0.5f , 0.0f );
+  player[2].set_color( 0.85f , 0.85f , 0.0f );
+  player[3].set_color( 0.25f , 1.0f , 0.25f );
+  player[4].set_color( 0.0f , 0.5f , 1.0f );
+  player[5].set_color( 0.75f , 0.0f , 0.75f );
+  
   static int status = 0;
   SDL_Event event;
   while(SDL_PollEvent(&event))
