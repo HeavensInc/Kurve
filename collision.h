@@ -18,6 +18,8 @@ struct trailobj
 
   float x1, x2,	   // Coordinates the trail goes to in that step
         y1, y2 ;   //
+        
+  bool keep_this ;
 };
 
 class quadcheck

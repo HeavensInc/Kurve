@@ -54,12 +54,15 @@ int main(int argc, char *argv[])
   player[4].set_color( 0.0f , 0.5f , 1.0f );
   player[5].set_color( 1.0f , 0.0f , 1.0f );
 */
+// See RESET in init_loop ;
+/*
   player[0].set_color( 1.0f , 0.25f , 0.25f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
   player[2].set_color( 0.85f , 0.85f , 0.0f );
   player[3].set_color( 0.25f , 1.0f , 0.25f );
   player[4].set_color( 0.0f , 0.5f , 1.0f );
   player[5].set_color( 0.75f , 0.0f , 0.75f );
+*/
 
   //SDL-Start
   //
@@ -123,8 +126,18 @@ int main(int argc, char *argv[])
 
     while ( game_running && game_loop )
     {
+
 //      SDL_Delay(20);
-      staticwait(20);
+      bool zombies = true;
+      for( int i=0;i<6;i++)
+      {
+        zombies = zombies && !( player[i].pt_get() == pt_human && player[i].isalive() ) ;
+      }
+
+      if(!zombies){
+        staticwait(20);
+      }
+      
       status = loop_run_game();
       if(status == 1)
       {
@@ -398,6 +411,15 @@ int   loop_mainmenu()
 
 int         loop_initgame()
 { 
+  // RESET Player-Colors ;
+  player[0].set_color( 1.0f , 0.25f , 0.25f );
+  player[1].set_color( 1.0f , 0.5f , 0.0f );
+  player[2].set_color( 0.85f , 0.85f , 0.0f );
+  player[3].set_color( 0.25f , 1.0f , 0.25f );
+  player[4].set_color( 0.0f , 0.5f , 1.0f );
+  player[5].set_color( 0.75f , 0.0f , 0.75f );
+  
+  
   SDL_Event event;
   while(SDL_PollEvent(&event))
   {
@@ -624,6 +646,15 @@ int         loop_run_game()
              t_draw->next->status = 100;
           if(NULL != t_draw->prev)
              t_draw->prev->status = 100;
+          
+             
+          t_draw->keep_this = true;
+          
+          if(NULL != t_draw->next)
+              t_draw->next->keep_this = true;
+          if(NULL != t_draw->prev)
+              t_draw->prev->keep_this = true;
+          
         }
 
 
@@ -637,7 +668,7 @@ int         loop_run_game()
         {
           if( i != k && player[k].isalive()) player[k].score++;
         }
-        if(killer > -1) player[killer].score++;
+        if(killer > -1 && !player[killer].isalive() ) player[killer].score++;
       }
     }
   }

@@ -217,7 +217,7 @@ void  player_c::render_go_step(player_c* players)
     trailobj* step = new trailobj;
     step->status = 30 ;
     step->type   = ( hole_len > hole_next ? 1 : 0 ) ;
-
+    step->keep_this = false;
 //    float tmp_winkel = 2 * M_PI * winkel / DEF_WMAX ;
 
     float  x, y;
@@ -249,7 +249,7 @@ void  player_c::render_go_step(player_c* players)
     step->next = NULL;
 
     disappear--;
-    if(disappear == 0)
+    if(disappear == 0 && !t_start->keep_this )
     {
       disappear = 2 ;
       t_start = t_start->next ;
@@ -347,6 +347,7 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
     {
       if(tc.check(t_draw))
       {
+//        t_draw->keep_this = true ;
         return t_draw;
       }
     }

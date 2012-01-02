@@ -54,6 +54,7 @@ public:
   player_c()  ;
   ~player_c() ;
 
+  int   pt_get() { return playertype; }
   void  pt_next();
   void  pt_prev();
   

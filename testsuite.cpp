@@ -8,13 +8,20 @@
 
 int main()
 {
+  
   std::cout<< " SDL_Delay (  0 ) " << std::endl;
   SDL_Delay ( 0 ) ;
-  std::cout<< " SDL_Delay ( -1 ) " << std::endl;
-  SDL_Delay ( -1 ) ;
   std::cout<< " SDL_Delays done " << std::endl;
         
+  for(int s=0;s<20;s++)
+  {
+    int start = SDL_GetTicks();
+    SDL_Delay(s);
+    int stop = SDL_GetTicks();
+    std::cout << s << " --> " << stop - start << std::endl;
+  }
 
+/*
   distcheck dc(30);
   trailobj tob[6];
   
@@ -45,5 +52,5 @@ int main()
   {
     std::cout << dc.get_part(i) << std::endl;
   }
-
+*/
 }
