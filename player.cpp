@@ -148,6 +148,7 @@ void  player_c::initialize( float x, float y, int id)
   t_start->y2      = y + sin( tmp_winkel_go ) * DEF_STEPLEN + cos( tmp_winkel_dir ) * DEF_TRWIDTH ;
 
   t_start->status = 10 ;
+  t_start->keep_this = false;
 
   hole_next = rand() % 50 + 25 ;
   hole_len  = rand() %  5 +  5 ;
@@ -255,6 +256,7 @@ void  player_c::render_go_step(player_c* players)
       t_start = t_start->next ;
       delete t_start->prev ;
       t_start->prev = NULL ;
+      
     }
 
   }
