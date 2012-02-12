@@ -37,14 +37,14 @@ int   AI_base::get_random_choice()
 {
   if(random_keep < 1)
   {
-    random_choice = rand() % 10 ;
+    random_choice = rand() % 50 ;
     if(random_choice==0) random_choice = -1 ;
     else
     if(random_choice==1) random_choice = +1 ;
     else
         random_choice = 0 ;
         
-    random_keep   = rand() % 10 + 10 ; // 4..6
+    random_keep   = rand() % 20 + 20 ; // 4..6
   }
   
   random_do_keep--;

@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         zombies = zombies && !( player[i].pt_get() == pt_human && player[i].isalive() ) ;
       }
 
-      if(!zombies){
+      if(!zombies ){
         staticwait(20);
       }
       
@@ -148,7 +148,8 @@ int main(int argc, char *argv[])
 
     while ( game_running && post_loop )
     {
-      SDL_Delay(20);
+//      SDL_Delay(20);
+      staticwait(20);
       status = loop_postgame();
 
       if(status == 1)

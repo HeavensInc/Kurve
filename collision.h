@@ -60,7 +60,7 @@ public:
   distcheck(int parts);
   ~distcheck();
   
-  void   setup(trailobj* tob);
+  void   setup(trailobj* tob, float start_dist=100.0f);
   
   void   calc_walls();
   void   calc_tob(trailobj* tob);

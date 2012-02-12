@@ -41,7 +41,7 @@ void  AI_basic::calculate()
 */
 
 //  std::cout << "AI DC set up" << std::endl ;
-  dc->setup(tob_current);
+  dc->setup(tob_current, 100.0f * 2);
   
   dc->calc_walls();
 
@@ -62,21 +62,25 @@ void  AI_basic::calculate()
   
   float decide[3] = { 0.0f , 0.0f , 0.0f};
   
+  float modifier = 1.0f;
   for(int i=0; i<9; i++)
   {
     int a;
     if(i < 3)
     {
       a = 0 ;
+      modifier = 1.0f;
     }
     else
     if(i > 5)
     {
       a = 2 ;
+      modifier = 1.0f;
     }    
     else
     {
       a = 1 ;
+      modifier = 1.0f / 2;
     }
     decide[a] += dc->get_part(i) ;
   }
@@ -90,9 +94,9 @@ void  AI_basic::calculate()
   decide[2] += ( 300 - decide[0] ) / 5.0f * (decide[2]/300);
   decide[0] += temp;
 
-  int randomchoice = get_random_choice();
+  int randomchoice = 0 ;//get_random_choice();
 //  if( randomchoice != 0 )
-    decide[1-randomchoice] *= 1.1f;
+    decide[1-randomchoice] *= 1.001f;
 
   // close area decision
   bool this_was_close = false;

@@ -42,7 +42,7 @@ void  AI_fine::calculate()
 */
 
 //  std::cout << "AI DC set up" << std::endl ;
-  dc->setup(tob_current);
+  dc->setup(tob_current, 100.0f * 3);
   
   dc->calc_walls();
 
@@ -63,23 +63,29 @@ void  AI_fine::calculate()
   
   float decide[3] = { 0.0f , 0.0f , 0.0f};
   
+
+  int a;
+  float modifier = 1.0f;
   for(int i=0; i < split_into; i++)
   {
-    int a;
+
     if(i < split_into/3)
     {
       a = 0 ;
+      modifier =   1.0f;
     }
     else
     if(i > split_into*2/3-1 )
     {
       a = 2 ;
+      modifier =   1.0f;
     }    
     else
     {
       a = 1 ;
+      modifier =   1.0f / 3;
     }
-    decide[a] += dc->get_part(i) ;
+    decide[a] += (dc->get_part(i)*modifier > 100.0f ? 100.0f : dc->get_part(i)*modifier ) ;
   }
 
   decide[1] += 1 ;
@@ -87,13 +93,14 @@ void  AI_fine::calculate()
 //  std::cout << decide[0] << " "  << decide[1] << " " << decide[2] << std::endl;
 
 //  printf("  %3f  %3f  %3f  \n" , decide[0] , decide[1] , decide[2] );
+  
   float temp = ( split_into/3*100 - decide[2] ) / 20.0f ;
   decide[2] += ( split_into/3*100 - decide[0] ) / 20.0f ;
   decide[0] += temp;
 
-  int randomchoice = get_random_choice();
+  int randomchoice = 0;//get_random_choice();
 //  if( randomchoice != 0 )
-    decide[1-randomchoice] *= 1.0001f;
+    decide[1-randomchoice] *= 1.01f;
 
 
   // close area decision

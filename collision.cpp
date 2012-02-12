@@ -152,11 +152,8 @@ distcheck::distcheck(int new_parts)
   }
 }
 
-void  distcheck::setup(trailobj* tob)
+void  distcheck::setup(trailobj* tob, float start_dist)
 {
-  for(int i = 0;i<parts;i++)
-    min_dist[i] = 100;
-
   x = (tob->x1 + tob->x2) / 2.0f ;
   y = (tob->y1 + tob->y2) / 2.0f ;
   
@@ -168,7 +165,11 @@ void  distcheck::setup(trailobj* tob)
   
   direction = atan2(vector_y, vector_x) ;
   
-//  std::cout << direction << std::endl;
+  for(int i=0;i<parts+1;i++)
+  {
+    min_dist[i] = start_dist ;
+  } 
+
 }
 
 distcheck::~distcheck()
@@ -189,10 +190,11 @@ float distcheck::get_direction(float dx, float dy)
 void distcheck::calc_walls()
 {
   float dist[ parts+1 ];
-  for(int i=0;i<parts+1;i++)
-  {
-    dist[i] = 100.0f; //maxdist
+  for(int i = 0;i<parts+1;i++)
+    dist[i] = min_dist[i];
     
+  for(int i=0;i<parts+1;i++)
+  {   
     float vecx = cos( direction + M_PI * ( -0.5f +1.0f * i / parts ) );
     float vecy = sin( direction + M_PI * ( -0.5f +1.0f * i / parts ) );
 
@@ -230,7 +232,10 @@ void distcheck::calc_walls()
   {
     min_dist[i] = (min_dist[i] < dist[ i ] ? min_dist[i] : dist[ i ]) ;
     min_dist[i] = (min_dist[i] < dist[i+1] ? min_dist[i] : dist[i+1]) ;
+    
+//    std::cout << "  " << min_dist[i] ;
   }
+//  std::cout << std::endl ;
 }
 
 void distcheck::calc_tob(trailobj* tob)
@@ -259,8 +264,8 @@ void distcheck::calc_tob(trailobj* tob)
   {
     if( tob->type >  0 && dir > -0.4f*M_PI && dir < 0.4f*M_PI)
     {
-      modifier *=  4 ;
-      mod_add  += 10 ;
+      modifier *=  2 ;
+      mod_add  +=  5 ;
     }
   
     t_dist = sqrt( vecx*vecx + vecy*vecy ) * modifier + mod_add;
