@@ -250,7 +250,7 @@ void  player_c::render_go_step(player_c* players)
     step->next = NULL;
 
     disappear--;
-    if(disappear == 0 && !t_start->keep_this )
+    if(disappear == 0  && global.dissolve == 0) // && !t_start->keep_this
     {
       disappear = 2 ;
       t_start = t_start->next ;

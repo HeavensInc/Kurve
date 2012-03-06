@@ -46,6 +46,10 @@ int main(int argc, char *argv[])
   prep_loop    = false;
   game_loop    = false;
   post_loop    = false;
+  
+  global.dissolve=0;
+  global.scale_id=0;
+  global.scale = 1.0f ;
 /*
   player[0].set_color( 1.0f , 0.0f , 0.0f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
@@ -71,7 +75,7 @@ int main(int argc, char *argv[])
   SDL_Init(SDL_INIT_VIDEO);
   
   { // Init-time variables should not remain .. :)
-    char caption[32];
+    char caption[128];
     sprintf( caption , "Kurve %s" , VERSION );
     SDL_WM_SetCaption( (char*)caption , NULL );
     
@@ -221,8 +225,8 @@ void  gl_setup(bool resize)
 
   if(resize)
   {
-    global.gl_width  = global.sdl_width;
-    global.gl_height = global.sdl_height;
+    global.gl_width  = global.sdl_width  / global.scale;
+    global.gl_height = global.sdl_height / global.scale;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -309,6 +313,24 @@ int   loop_mainmenu()
       case SDLK_SPACE:
         if(global.playercount > 1)
           status++;
+        break;
+
+      case SDLK_F7:
+        global.dissolve++;
+        if(global.dissolve > 1) global.dissolve=0;
+        break;
+
+      case SDLK_F8:
+        global.scale_id++;
+        if(global.scale_id > 3) global.scale_id=0;
+        
+        if(global.scale_id == 0) global.scale=1.0f ;
+        if(global.scale_id == 1) global.scale=1.5f ;
+        if(global.scale_id == 2) global.scale=2.0f ;
+        if(global.scale_id == 3) global.scale=3.0f ;
+        
+        gl_setup(true);
+        
         break;
 
 
@@ -410,7 +432,8 @@ int   loop_mainmenu()
     text.gamemenu(player, alpha);
     text.scores(player, 1.0f-alpha);
   }
-
+  text.settings(alpha);
+  
   SDL_GL_SwapBuffers();
 
   return 0;

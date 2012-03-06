@@ -42,9 +42,7 @@ struct __globals
   int   livecount ;
   
   //settings
-  bool  dissolve_the_end ;
-  bool  dissolve_crash_stop ;
-  bool  dissolve_on_death ;
+  int  dissolve ;
   
   int   scale_id ;
   float scale ;

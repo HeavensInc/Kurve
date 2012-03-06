@@ -26,6 +26,7 @@ class __text{
         void  load();
         void  draw(char* text , int x , int y);
         void  gamemenu (player_c* players, float alpha = 1.0f) ;
+        void  settings (float alpha);
         void  scores   (player_c* players, float alpha = 1.0f) ;
         void  scoreboard(player_c* players, int) ;
         void  countdown(float     status ) ;

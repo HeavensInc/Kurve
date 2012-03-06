@@ -141,10 +141,10 @@ void __text::load()
     }
     glGenTextures( 1, &texID );
     glBindTexture( GL_TEXTURE_2D, texID );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-//      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-//      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+//      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+//      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     glTexImage2D( GL_TEXTURE_2D, 0, nOfColors, surface->w, surface->h, 0,
         texture_format, GL_UNSIGNED_BYTE, surface->pixels );
   }
@@ -216,8 +216,25 @@ void __text::gamemenu(player_c* players , float alpha)
 
     sprintf(displaystring, "Player %d  ( %s )  %s" , i+1, get_steer_string(i), players[i].get_name() );
     
-    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (5-i) + 40) ;
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (5-i) ) ;
   }
+}
+
+
+void __text::settings( float alpha)
+{
+    glColor4f(1.0f,1.0f,1.0f,0.5f);
+
+    const char* dissolve[]={ (char*)"F 7  -  Dissolve the Line" , (char*)"F 7  -  Keep everything"};    
+    const char* scales[]={ (char*)"F 8  -  Scale: 1.0x", (char*)"F 8  -  Scale: 1.5x", (char*)"F 8  -  Scale: 2.0x", (char*)"F 8  -  Scale: 3.0x"};    
+    
+    char displaystring[256];    
+
+    sprintf(displaystring, "%s" , dissolve[global.dissolve] );    
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 40) ;
+   
+    sprintf(displaystring, "%s" , scales[global.scale_id] );
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 60) ;
 }
 
 
@@ -278,12 +295,12 @@ void __text::helper(int select, bool reset, bool fade)
 
     if(select == 1)
     {
-      draw( (char*)"Select at least 2 Players to play" , global.gl_width/2 - 165 , global.gl_height/2 + 80 ) ;
+      draw( (char*)"Select at least 2 Players to play" , global.gl_width/2 - 165 , global.gl_height/2 + 100 ) ;
     }
     else
     if(select == 2)
     {
-      draw( (char*)"Press Space to start the game" , global.gl_width/2 - 145 , global.gl_height/2 + 80 ) ;
+      draw( (char*)"Press Space to start the game" , global.gl_width/2 - 145 , global.gl_height/2 + 100 ) ;
     }
     else
     {

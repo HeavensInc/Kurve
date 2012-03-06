@@ -1,4 +1,4 @@
-VERSION = 0.04 - Rocking The Scores
+VERSION = 0.04 - Rocking The Scores + Settings
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
