@@ -361,6 +361,132 @@ void __text::scores(player_c* players, float alpha)
   }
 }
 
+
+void __text::scoreboard(player_c* players, int gfx_helper)
+{
+  //Constants
+  int phase1 = 50;
+  int phase2 = 20;
+  int phase3 =  4;
+
+  float height = 200.0f;
+  float width  = 300.0f;
+  
+  float alpha  = gfx_helper*1.0f /phase1;
+  alpha = (alpha > 1.0f ? 1.0f : alpha);
+
+  glBlendFunc(GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA);
+  
+  char string[32] ;
+
+  float li = (global.gl_width  -  width ) / 2 ;
+  float re = (global.gl_width  +  width ) / 2 ;
+  float un = (global.gl_height - height ) / 2 ;
+  float ob = (global.gl_height + height ) / 2 ;
+  
+  float hmi = (global.gl_width)  / 2 ;
+  float vmi = (global.gl_height) / 2 ;
+
+
+  glBegin( GL_QUADS );
+    glColor4f(0.0f,0.0f,0.0f, alpha-0.3f);
+    glVertex3f( li , ob , 0.0f);
+    glVertex3f( re , ob , 0.0f);
+    glVertex3f( re , un , 0.0f);
+    glVertex3f( li , un , 0.0f);
+  glEnd();
+
+
+  glBegin( GL_LINE_STRIP );
+    glColor4f(1.0f,1.0f,1.0f, alpha*2);
+    glVertex3f( li , ob , 0.0f);
+    glVertex3f( re , ob , 0.0f);
+
+    glColor4f(1.0f,1.0f,1.0f, alpha*2-0.5f);
+    glVertex3f( re , un , 0.0f);
+    glVertex3f( li , un , 0.0f);
+
+    glColor4f(1.0f,1.0f,1.0f, alpha*2);
+    glVertex3f( li , ob , 0.0f);
+  glEnd();
+
+  glBlendFunc(GL_SRC_ALPHA , GL_ONE);
+
+  alpha  = ( gfx_helper - phase1 ) / phase2 ;
+  alpha = (alpha > 1.0f ? 1.0f : alpha);
+
+  glColor4f(1.0f,1.0f,1.0f, alpha);
+
+  sprintf(string, "-- SCORES --" ) ;
+  draw(string , hmi-60,  vmi - 20*3.5) ;
+
+  static int flashing = 0 ;
+  flashing++;
+  if( flashing > 40) flashing = 0 ;
+  float white = flashing/20;
+  if(white > 1.0f) white = 2.0f-white ;
+
+  for(int i=0;i<6;i++)
+  {
+    if(players[i].playing)
+    {
+      if(players[i].isalive())
+        players[i].gl_color(alpha);
+      else 
+        players[i].gl_color( DEF_ALPHAM * alpha);
+
+      int position=1;
+      int location=1;
+      for(int j=0; j<6; j++)
+      {
+        if(players[j].playing)
+        {
+          if(players[i].score < players[j].score)
+          {
+            position++;
+            location++;
+          }
+          else
+          if(players[i].score == players[j].score && i>j)
+            location++;
+        }
+      }
+      float alpha  = ( gfx_helper - phase1 - phase3*(location) ) / phase2 ;
+      alpha = (alpha > 1.0f ? 1.0f : alpha);
+      alpha = (alpha < 0.0f ? 0.0f : alpha);
+
+      if(players[i].score >= global.playercount*5)    
+        players[i].gl_color(alpha, white/3.0f+0.1f);
+      else
+        players[i].gl_color(alpha);
+
+  
+//14 * 10px * 1/2 -> 70
+      sprintf(string, "%d. Player %d %02d", position , i+1 , players[i].score ) ;
+      draw(string , hmi-70,  vmi + 20 * location - 20*3.5) ;
+    }
+    else
+    {
+      int location=1;
+      for(int j=0; j<6; j++)
+      {
+        if(players[j].playing || i>j)
+        {
+          location++;
+        }
+      }
+
+      float alpha  = ( gfx_helper - phase1 - phase3*location ) / phase2 ;
+      alpha = (alpha > 1.0f ? 1.0f : alpha);
+      alpha = (alpha < 0.0f ? 0.0f : alpha);
+      
+      glColor4f(0.5f , 0.5f , 0.5f , alpha) ;
+      sprintf(string, "-- -------- --" ) ;
+      draw(string , hmi-70,  vmi + 20 * location - 20*3.5) ;
+    }
+  }
+}
+
 void  __text::countdown(float     status )
 {
   int number = status + 0.75 ;

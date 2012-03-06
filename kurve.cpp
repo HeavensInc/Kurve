@@ -699,32 +699,35 @@ int         loop_run_game()
 int         loop_postgame()
 {
   int leavestate = 0 ;
-  gl_setup(false);
+  static int targetstate = 0 ;
+  static int gfx_helper  = 0 ;
 
   SDL_Event event;
   while(SDL_PollEvent(&event))
   {
     commonevent(&event);
 
+    int maxpkt = 0;
+    for(int i=0;i<6;i++)
+    {
+      maxpkt = ( maxpkt > player[i].score ? maxpkt : player[i].score) ;
+    }
+
     if(event.type == SDL_KEYDOWN)
     {
-    int maxpkt = 0;
+
     switch(event.key.keysym.sym)
       {
       case SDLK_SPACE:
-        for(int i=0;i<6;i++)
-        {
-          maxpkt = ( maxpkt > player[i].score ? maxpkt : player[i].score) ;
-        }
         if(maxpkt < 5 * global.playercount)
         {
-          leavestate = 2;
+          targetstate = 2;
         }else{
-          leavestate = 1;
+          targetstate = 1;
         }
         break;
       case SDLK_ESCAPE:
-        leavestate = 1;
+        targetstate = 1;
         break;
       default:
         break;
@@ -733,7 +736,7 @@ int         loop_postgame()
   }
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  gl_setup(false);
   for(int i=0;i<6;i++)
   {
     player[i].render_trail_display();
@@ -741,9 +744,31 @@ int         loop_postgame()
   text.helper( 3 );
   text.scores(player);
 
+  text.scoreboard(player, gfx_helper);
+
   SDL_GL_SwapBuffers();
 
+  gl_setup(false);
+  
 //  DEBUG( std::cout << " L " << global.livecount << " P " << global.playercount << "\n" ; )
+
+
+
+  if(targetstate == 0)
+  {
+    gfx_helper++;
+  }else{
+    gfx_helper--;
+    if(gfx_helper == 0)
+    leavestate = targetstate ;
+    if(gfx_helper > 50) gfx_helper = 50;
+  }
+
+  if(leavestate != 0)
+  {
+    targetstate = 0;
+    gfx_helper  = 0;
+  }
 
   return leavestate;
 }

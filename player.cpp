@@ -173,9 +173,9 @@ void  player_c::set_color(  float r, float g, float b)
   color_gap[2] = b * 0.4f ;
 }
 
-void  player_c::gl_color(float alpha)
+void  player_c::gl_color(float alpha , float white)
 {
-  glColor4f( color_trail[0] , color_trail[1] , color_trail[2] , alpha ) ;
+  glColor4f( color_trail[0] + white, color_trail[1] + white , color_trail[2] + white , alpha ) ;
 }
 
 

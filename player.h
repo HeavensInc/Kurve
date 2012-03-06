@@ -60,7 +60,7 @@ public:
   
   void  initialize( float x, float y, int  id );
   void  set_color(  float r, float g, float b );
-  void  gl_color(float alpha=1.0f);
+  void  gl_color(float alpha=1.0f, float white=0.0f);
 
   void  render_go_step(player_c* players) ;
   void  render_trail_display() ;

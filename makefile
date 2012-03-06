@@ -1,4 +1,4 @@
-VERSION = 0.03 AI-Dist
+VERSION = 0.04 - Rocking The Scores
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
