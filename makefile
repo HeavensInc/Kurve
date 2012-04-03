@@ -1,4 +1,4 @@
-VERSION = 0.04 - Rocking The Scores + Settings
+VERSION = 0.05 - U haz name?
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
@@ -12,7 +12,7 @@ W32LIBS = -static-libgcc -static-libstdc++ -lSDL -lopengl32
 UNUSED  =  -lSDLmain  -lmingw32
 
 DEF = including.h staticwait.h
-HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h AI_fine.h
+HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h AI_fine.h name_manager.h
 SRC = kurve.cpp $(HDR:%.h=%.cpp)
 OBJ = $(SRC:%.cpp=%.o)
 W32 = $(SRC:%.cpp=%.w32)

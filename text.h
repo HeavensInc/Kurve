@@ -3,6 +3,7 @@
 
 #include "including.h"
 #include "player.h"
+#include "name_manager.h"
 
 struct coordinaten
 {
@@ -17,6 +18,7 @@ class __text{
     protected:
         GLuint texID;
         char texture [64]  ;
+        __name_manager name_manager;
     public:
         __text()
         {

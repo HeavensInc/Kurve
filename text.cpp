@@ -152,6 +152,8 @@ void __text::load()
     printf("Some Image could not be loaded : %s\n", SDL_GetError());
   }
   if(surface) SDL_FreeSurface( surface ) ;
+  
+  name_manager.load();
 }//load
 
 void __text::draw(char* text , int x , int y)
@@ -214,7 +216,7 @@ void __text::gamemenu(player_c* players , float alpha)
 
     char displaystring[256];    
 
-    sprintf(displaystring, "Player %d  ( %s )  %s" , i+1, get_steer_string(i), players[i].get_name() );
+    sprintf(displaystring, "%s  ( %s )  %s" , name_manager.get_name(i+1) , get_steer_string(i), players[i].get_name() );
     
     draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 - 20 * (5-i) ) ;
   }
@@ -365,14 +367,14 @@ void __text::scores(player_c* players, float alpha)
         players[i].gl_color( DEF_ALPHAM * alpha);
 
 
-      sprintf(string, "P%d %02d", i+1 , players[i].score ) ;
+      sprintf(string, "%s %02d", name_manager.get_tag(i+1) , players[i].score ) ;
       draw(string , i * 70 + 20 , 5) ;
     }
     else
     {
 
       glColor4f(0.5f , 0.5f , 0.5f , DEF_ALPHAM * alpha) ;
-      sprintf(string, "P%d --", i+1 ) ;
+      sprintf(string, "%s --", name_manager.get_tag(i+1) ) ;
       draw(string , i * 70 + 20 , 5) ;
     }
   }
@@ -382,7 +384,7 @@ void __text::scores(player_c* players, float alpha)
 void __text::scoreboard(player_c* players, int gfx_helper)
 {
   //Constants
-  int phase1 = 50;
+  int phase1 = 20;
   int phase2 = 20;
   int phase3 =  4;
 
@@ -479,7 +481,7 @@ void __text::scoreboard(player_c* players, int gfx_helper)
 
   
 //14 * 10px * 1/2 -> 70
-      sprintf(string, "%d. Player %d %02d", position , i+1 , players[i].score ) ;
+      sprintf(string, "%d. %s %02d", position , name_manager.get_name(i+1) , players[i].score ) ;
       draw(string , hmi-70,  vmi + 20 * location - 20*3.5) ;
     }
     else
