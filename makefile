@@ -1,4 +1,4 @@
-VERSION = 0.05 - U haz name?
+VERSION = 0.06 - On Speed
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++

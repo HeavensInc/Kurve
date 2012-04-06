@@ -228,15 +228,19 @@ void __text::settings( float alpha)
     glColor4f(1.0f,1.0f,1.0f,0.5f);
 
     const char* dissolve[]={ (char*)"F 7  -  Dissolve the Line" , (char*)"F 7  -  Keep everything"};    
-    const char* scales[]={ (char*)"F 8  -  Scale: 1.0x", (char*)"F 8  -  Scale: 1.5x", (char*)"F 8  -  Scale: 2.0x", (char*)"F 8  -  Scale: 3.0x"};    
+    const char* scales[]={ (char*)"F 8  -  Scale  1.0x", (char*)"F 8  -  Scale  1.5x", (char*)"F 8  -  Scale  2.0x", (char*)"F 8  -  Scale  3.0x"};    
+    const char* speeds[]={ (char*)"F 9  -  Speed  1.0x", (char*)"F 9  -  Speed  0.7x", (char*)"F 9  -  Speed  0.5x", (char*)"F 9  -  Speed  2.0x", (char*)"F 9  -  Speed  1.4x"};    
     
     char displaystring[256];    
 
     sprintf(displaystring, "%s" , dissolve[global.dissolve] );    
-    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 40) ;
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 30) ;
    
     sprintf(displaystring, "%s" , scales[global.scale_id] );
-    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 60) ;
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 50) ;
+    
+    sprintf(displaystring, "%s" , speeds[global.speed_id] );
+    draw( displaystring , global.gl_width/2 - 110 , global.gl_height/2 + 70) ;
 }
 
 

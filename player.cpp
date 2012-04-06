@@ -286,9 +286,9 @@ void  player_c::render_trail_display_fade( float alpha , float white )
 
   do
   {
-    float flash = ( t_draw->status - 3 ) / 40.0f ;
+    float flash = ( t_draw->status ) / 40.0f ;
     flash = (flash < 0 || flash > 1 ? 1 : flash ) ;
-    flash = (t_draw->status == 0 ? 0 : flash ) ;   
+    flash = flash * flash * (t_draw->type == 0 ? 1 : 0.5) ;   
     
     float alpha2 = alpha * (t_draw->status == 0 ? 0.66f : 1 ) ;   
     
@@ -308,7 +308,7 @@ void  player_c::render_trail_display_fade( float alpha , float white )
     glVertex2f( t_draw->x1 , t_draw->y1 ) ;
     glVertex2f( t_draw->x2 , t_draw->y2 ) ;
 
-    if( t_draw->status ) t_draw->status-- ;
+    if( t_draw->status > 0 ) t_draw->status-- ;
   }
   while( NULL != (t_draw = t_draw->next) );
 

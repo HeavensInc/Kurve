@@ -29,7 +29,7 @@ void      gl_setup(bool resize);
 bool      commonevent(SDL_Event* event);
 int       loop_mainmenu() ;
 int       loop_initgame() ;
-int       loop_run_game() ;
+int       loop_run_game(bool render = true) ;
 int       loop_postgame() ;
 
 int main(int argc, char *argv[])
@@ -50,6 +50,11 @@ int main(int argc, char *argv[])
   global.dissolve=0;
   global.scale_id=0;
   global.scale = 1.0f ;
+  global.speed_id=0;
+  global.speed = 1.0f ;
+  
+  
+  
 /*
   player[0].set_color( 1.0f , 0.0f , 0.0f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
@@ -138,15 +143,27 @@ int main(int argc, char *argv[])
         zombies = zombies && !( player[i].pt_get() == pt_human && player[i].isalive() ) ;
       }
 
-      if(!zombies ){
-        staticwait(20);
-      }
-      
+      staticwait(20 / global.speed );
+
       status = loop_run_game();
       if(status == 1)
       {
         game_loop = false;
         post_loop = true;
+      }
+ 
+      if(zombies && game_loop)
+      {
+        for(int i=0;i<4;i++)
+        {
+          status = loop_run_game(false);
+          if(status == 1)
+          {
+            game_loop = false;
+            post_loop = true;
+            break;
+          }
+        }
       }
     }
 
@@ -329,8 +346,27 @@ int   loop_mainmenu()
         if(global.scale_id == 2) global.scale=2.0f ;
         if(global.scale_id == 3) global.scale=3.0f ;
         
+        if(global.sdl_height / global.scale < DEF_BDIST * 3 && global.sdl_width / global.speed < DEF_BDIST * 3)
+        {
+          global.scale_id=0;
+          global.scale=1.0f ;
+        }
         gl_setup(true);
         
+        break;
+
+
+      case SDLK_F9:
+        std::cout << "F9!!\n" ;
+        global.speed_id++;
+        if(global.speed_id > 4) global.speed_id=0;
+        
+        if(global.speed_id == 0) global.speed=1.0f ;
+        if(global.speed_id == 1) global.speed=0.7f ;
+        if(global.speed_id == 2) global.speed=0.5f ;
+        if(global.speed_id == 3) global.speed=2.0f ;
+        if(global.speed_id == 4) global.speed=1.4f ;
+                
         break;
 
 
@@ -507,6 +543,7 @@ int         loop_initgame()
   }
 
   static int steps = 0 ;
+/*
   if(status == 1)
   {
     steps++;
@@ -545,24 +582,27 @@ int         loop_initgame()
       status++;
     }
   }
+  */
+  status++;
+  if( status < 150 )
+  {  
+    for(int i=0;i<6;i++)
+    {
+      if(status % 20 == 0)
+        player[i].render_go_step(player) ;
+        
+      player[i].render_trail_display() ;
+    }
+
+    text.countdown( 4 - status / 50.0f );
+//    std::cout << "Status = " << status << endl ;
+  }
 
   SDL_GL_SwapBuffers();
 
-  if(status==5)
+  if(status >= 150)
   {
-    steps  = 0;
     status = 0;
-/*    for(int i=0;i<6;i++)
-    {
-      trailobj* t_draw;
-      t_draw = player[i].get_t_start();
-      while( player[i].get_t_current() != t_draw )
-      {
-        t_draw->status = 8;
-        t_draw = t_draw->next ;
-      }
-    }
-*/
     return 1;
   }
 
@@ -570,7 +610,7 @@ int         loop_initgame()
 }
 
 
-int         loop_run_game()
+int         loop_run_game(bool render) //render=true
 {
   gl_setup(false);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -607,13 +647,16 @@ int         loop_run_game()
   for(int i=0;i<6;i++)
   {
     player[i].render_go_step(player);
-    player[i].render_trail_display();
+    if(render) 
+      player[i].render_trail_display();
   }
 
-  text.scores(player);
-
-  SDL_GL_SwapBuffers();
-
+  if(render) 
+  {    
+    text.scores(player);
+    SDL_GL_SwapBuffers();
+  }
+  
   for(int i=0;i<6;i++)
   {
     if(player[i].isalive())

@@ -12,7 +12,7 @@
 //#define DEF_WMAX        96
 #define DEF_WMAX        72
 
-#define DEF_BDIST      150
+#define DEF_BDIST      100
 #define DEF_WALL      1.5f
 #define DEF_SCORES      25
 
@@ -46,6 +46,9 @@ struct __globals
   
   int   scale_id ;
   float scale ;
+  
+  int   speed_id;
+  float speed;
 };
 
 extern __globals global ;
