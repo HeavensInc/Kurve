@@ -1,4 +1,4 @@
-VERSION = 0.06 - On Speed
+VERSION = 0.07 - Particles
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
@@ -12,7 +12,7 @@ W32LIBS = -static-libgcc -static-libstdc++ -lSDL -lopengl32
 UNUSED  =  -lSDLmain  -lmingw32
 
 DEF = including.h staticwait.h
-HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h AI_fine.h name_manager.h
+HDR = player.h constants.h text.h collision.h AI_base.h AI_basic.h AI_fine.h name_manager.h particles.h particle_creator.h
 SRC = kurve.cpp $(HDR:%.h=%.cpp)
 OBJ = $(SRC:%.cpp=%.o)
 W32 = $(SRC:%.cpp=%.w32)

@@ -156,21 +156,28 @@ void  player_c::initialize( float x, float y, int id)
   deathfade = DEF_DEADFADE;
   dead = false;
   alive= true;
-  disappear = 50 ;
+  disappear = 20 ;
 
   t_current = t_start;
   t_start->next = NULL;
   this->id = id ;
+  
+  if(!playing) return;
+  
+  particle* pt =   pt_create_start(color_trail[0],color_trail[1],color_trail[2], x,y, tmp_winkel_go);  
+  particles.add(pt);
+
 }
+
 void  player_c::set_color(  float r, float g, float b)
 {
   color_trail[0] = r ;
   color_trail[1] = g ;
   color_trail[2] = b ;
 
-  color_gap[0] = r * 0.4f ;
-  color_gap[1] = g * 0.4f ;
-  color_gap[2] = b * 0.4f ;
+  color_gap[0] = r * 0.3f ;
+  color_gap[1] = g * 0.3f ;
+  color_gap[2] = b * 0.3f ;
 }
 
 void  player_c::gl_color(float alpha , float white)
@@ -339,7 +346,8 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
   t_end = t_current;
   
   //prevent self collision
-  if(self) t_end = t_end->prev->prev->prev;
+//  if(self) t_end = t_end->prev->prev->prev;
+  if(self) t_end = t_end->prev;
   
   while( t_draw != t_end )
   {

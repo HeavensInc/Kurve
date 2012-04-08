@@ -208,8 +208,12 @@ void  gl_init( bool fullscreen , int w , int h )
     SDL_Surface* screen;
     screen = SDL_SetVideoMode( w , h , 0 , SDL_OPENGL | SDL_FULLSCREEN);
     
-    w = screen->w;
-    h = screen->h;
+    if(screen)
+    {
+      w = screen->w;
+      h = screen->h;
+    }
+    
   }else{
     if(w == 0 || h == 0)
     {
@@ -232,6 +236,7 @@ void  gl_init( bool fullscreen , int w , int h )
   global.sdl_height = h ;
   
   text.load();
+  particles.load();
   gl_setup(false);
 
 }
@@ -305,9 +310,9 @@ int   loop_mainmenu()
 {
   player[0].set_color( 1.0f , 0.25f , 0.25f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
-  player[2].set_color( 0.85f , 0.85f , 0.0f );
+  player[2].set_color( 0.9f , 0.9f , 0.0f );
   player[3].set_color( 0.25f , 1.0f , 0.25f );
-  player[4].set_color( 0.0f , 0.5f , 1.0f );
+  player[4].set_color( 0.3f , 0.7f , 1.0f );
   player[5].set_color( 0.75f , 0.0f , 0.75f );
   
   static int status = 0;
@@ -593,10 +598,11 @@ int         loop_initgame()
         
       player[i].render_trail_display() ;
     }
-
+    particles.render();
     text.countdown( 4 - status / 50.0f );
 //    std::cout << "Status = " << status << endl ;
   }
+
 
   SDL_GL_SwapBuffers();
 
@@ -654,6 +660,7 @@ int         loop_run_game(bool render) //render=true
   if(render) 
   {    
     text.scores(player);
+    particles.render();
     SDL_GL_SwapBuffers();
   }
   
@@ -740,7 +747,18 @@ int         loop_run_game(bool render) //render=true
         player[i].kill();
         for(int k=0;k<6;k++)
         {
-          if( i != k && player[k].isalive()) player[k].score++;
+          if( i != k && player[k].isalive())
+          {
+            player[k].score++;
+            
+            trailobj* tob=player[i].get_t_current() ;
+            float x = (tob->x1 + tob->x2) /2;
+            float y = (tob->y1 + tob->y2) /2;
+            
+            particle* pt =   pt_create_punkt(player[k].get_r(), player[k].get_g(), player[k].get_b(), x,y);  
+            particles.add(pt);
+
+          }
         }
         if(killer > -1 && !player[killer].isalive() ) player[killer].score++;
       }
@@ -807,6 +825,7 @@ int         loop_postgame()
   {
     player[i].render_trail_display();
   }
+  particles.render();
   text.helper( 3 );
   text.scores(player);
 

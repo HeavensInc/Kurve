@@ -3,7 +3,9 @@
 
 #include "including.h"
 #include "player.h"
+
 #include "name_manager.h"
+#include "particles.h"
 
 struct coordinaten
 {
@@ -32,7 +34,7 @@ class __text{
         void  scores   (player_c* players, float alpha = 1.0f) ;
         void  scoreboard(player_c* players, int) ;
         void  countdown(float     status ) ;
-	void  helper(int select = 0, bool reset = false, bool fade = false) ;
+      	void  helper(int select = 0, bool reset = false, bool fade = false) ;
 
 } ;
 

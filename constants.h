@@ -1,6 +1,8 @@
 #ifndef constants_h
 #define constants_h
 
+#include "particles.h"
+
 //#define DEBUG(a) a;
 #define DEBUG(a) ;
 
@@ -52,5 +54,6 @@ struct __globals
 };
 
 extern __globals global ;
+extern __pt_manager particles;
 
 #endif

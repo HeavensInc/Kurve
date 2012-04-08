@@ -9,8 +9,10 @@
 #include "AI_base.h"
 #include "AI_basic.h"
 #include "AI_fine.h"
+#include "particles.h"
+#include "particle_creator.h"
 
-enum
+enum playertype
 {
   pt_nothing,
   pt_human,
@@ -61,6 +63,9 @@ public:
   void  initialize( float x, float y, int  id );
   void  set_color(  float r, float g, float b );
   void  gl_color(float alpha=1.0f, float white=0.0f);
+  float get_r(){ return color_trail[0]; };
+  float get_g(){ return color_trail[1]; };
+  float get_b(){ return color_trail[2]; };
 
   void  render_go_step(player_c* players) ;
   void  render_trail_display() ;
