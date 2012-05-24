@@ -95,6 +95,9 @@ void __pt_manager::render(bool recalc) // recalc=true
       case PT_PUNKT:
         render_punkt(pt);
         break;
+      case PT_DOT:
+        render_dot(pt);
+        break;
     }
     
   
@@ -185,4 +188,29 @@ void __pt_manager::render_punkt(particle* pt)
   glDisable( GL_TEXTURE_2D );
   glLoadIdentity();
 }
+
+void __pt_manager::render_dot(particle* pt)
+{
+  glDisable(GL_TEXTURE_2D);
+  glLoadIdentity();
+  
+  glBegin(GL_TRIANGLE_FAN);
+
+//  glColor4f(1.0f,1.0f,1.0f, pt->lifetime*1.0f/pt->fadetime);
+  
+  glColor4f(pt->r,pt->g,pt->b, pt->lifetime*1.0f/pt->fadetime);
+  
+  glVertex3f(  pt->pos.x ,   pt->pos.y ,  0.0f ) ;
+  
+  glColor4f(pt->r,pt->g,pt->b, 0.0f);
+  for(int i=0;i<=50;i++)
+  {
+    glVertex3f(  pt->pos.x + pt->size * cos(M_PI * i/25) ,          pt->pos.y + pt->size * sin(M_PI * i/25) ,       0.0f ) ;
+  }  
+  glEnd();
+  
+//  std::cout << "render-dot \n" ;
+
+}
+
 

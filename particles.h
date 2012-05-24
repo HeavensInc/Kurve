@@ -14,6 +14,7 @@ enum PT_FORM
 {
   PT_START,
   PT_PUNKT,
+  PT_DOT,
   PT_END
 };
 
@@ -65,6 +66,7 @@ class __pt_manager
         
     void render_start(particle *);
     void render_punkt(particle *);
+    void render_dot(particle *);
 }
 ;
 

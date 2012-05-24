@@ -18,11 +18,11 @@ extern void staticwait(int msec)
   // Don't try to make delays < 3 ms. keep them for the next time
   if(timing < ticks-msec+3)
   {
+    timing += msec;
     return;
   }
   
   timing += msec;
-
   SDL_Delay( timing - ticks );
 
   return;

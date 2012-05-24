@@ -265,7 +265,13 @@ void  player_c::render_go_step(player_c* players)
       t_start->prev = NULL ;
       
     }
-
+    
+    if(intelligence == NULL || true)
+    {
+      particle* pt =   pt_create_dot(color_trail[0],color_trail[1],color_trail[2], x,y, tmp_winkel_go) ;  
+      particles.add(pt);
+    }
+    
   }
 }
 
@@ -297,21 +303,35 @@ void  player_c::render_trail_display_fade( float alpha , float white )
     flash = (flash < 0 || flash > 1 ? 1 : flash ) ;
     flash = flash * flash * (t_draw->type == 0 ? 1 : 0.5) ;   
     
-    float alpha2 = alpha * (t_draw->status == 0 ? 0.66f : 1 ) ;   
+    float alpha2 = alpha ;//* (t_draw->status == 0 ? 0.66f : 1 ) ;   
+
     
     if(t_draw->type == 0)
       glColor3f(
-          ( flash + color_trail[0] )  * alpha2  + white ,
-          ( flash + color_trail[1] )  * alpha2  + white ,
-          ( flash + color_trail[2] )  * alpha2  + white
+          ( flash + color_trail[0] + 0.5f ) /2 * alpha2  + white ,
+          ( flash + color_trail[1] + 0.5f ) /2 * alpha2  + white ,
+          ( flash + color_trail[2] + 0.5f ) /2 * alpha2  + white
              );
     else
       glColor3f(
-          ( flash + color_gap[0] )  * alpha2  + white ,
-          ( flash + color_gap[1] )  * alpha2  + white ,
-          ( flash + color_gap[2] )  * alpha2  + white
+          ( flash +  color_gap[0]  + 0.2f ) /2 * alpha2  + white ,
+          ( flash +  color_gap[1]  + 0.2f ) /2 * alpha2  + white ,
+          ( flash +  color_gap[2]  + 0.2f ) /2 * alpha2  + white
              );
-
+/*
+    if(t_draw->type == 0)
+      glColor3f(
+          ( 0.5f )  * alpha2  + white ,
+          ( 0.5f )  * alpha2  + white ,
+          ( 0.5f )  * alpha2  + white
+             );
+    else
+      glColor3f(
+          ( 0.2f )  * alpha2  + white ,
+          ( 0.2f )  * alpha2  + white ,
+          ( 0.2f )  * alpha2  + white
+             );
+*/           
     glVertex2f( t_draw->x1 , t_draw->y1 ) ;
     glVertex2f( t_draw->x2 , t_draw->y2 ) ;
 

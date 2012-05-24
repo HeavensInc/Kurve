@@ -73,3 +73,39 @@ particle* pt_create_punkt(float r,float g,float b,
 
   return pt;
 }
+
+
+particle* pt_create_dot(float r,float g,float b,
+                float x,float y,
+                float winkel)
+{
+  particle* pt = new particle;
+  pt->prev = NULL;
+  pt->next = NULL;
+
+  pt->type = PT_DOT ;
+
+  pt->r = r;
+  pt->g = g;
+  pt->b = b;
+  
+  pt->pos.x = x;
+  pt->pos.y = y;
+  pt->pos.z = 0;
+  
+  float richtung = 2 * M_PI * rand() / RAND_MAX ;
+  pt->vel.x = cos( winkel ) * DEF_STEPLEN  / 5  +   cos( richtung ) * DEF_STEPLEN  / 5;
+  pt->vel.y = sin( winkel ) * DEF_STEPLEN  / 5  +   sin( richtung ) * DEF_STEPLEN  / 5;
+  pt->vel.z = 0;
+  
+  pt->accel.x = 0 ;
+  pt->accel.y = 0 ;
+  pt->accel.z = 0 ;
+  
+  pt->brake    = 1.0f;
+  pt->lifetime = 40 ;
+  pt->fadetime = 25  ;
+  pt->size     = 5 ;
+  
+  return pt;
+}

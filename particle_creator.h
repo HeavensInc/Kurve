@@ -6,6 +6,10 @@
 particle* pt_create_start(float r,float g,float b,
                 float x,float y,
                 float winkel);
+
+particle* pt_create_dot(float r,float g,float b,
+                float x,float y,
+                float winkel);
                 
 particle* pt_create_punkt(float r,float g,float b,
                 float x,float y);

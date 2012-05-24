@@ -1,4 +1,4 @@
-VERSION = 0.07 - Particles
+VERSION = 0.08 - All the lines are gray
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++
