@@ -1,4 +1,4 @@
-VERSION = 0.08 - All the lines are gray
+VERSION = 0.09 - Secrets
 
 CC      = /usr/bin/g++
 W32CC   = /usr/bin/mingw32-g++

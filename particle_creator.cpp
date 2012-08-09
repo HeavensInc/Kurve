@@ -85,12 +85,12 @@ particle* pt_create_dot(float r,float g,float b,
 
   pt->type = PT_DOT ;
 
-  pt->r = r;
-  pt->g = g;
-  pt->b = b;
+  pt->r = r / 2;
+  pt->g = g / 2;
+  pt->b = b / 2;
   
-  pt->pos.x = x;
-  pt->pos.y = y;
+  pt->pos.x = x - cos( winkel ) * DEF_STEPLEN;
+  pt->pos.y = y - sin( winkel ) * DEF_STEPLEN;
   pt->pos.z = 0;
   
   float richtung = 2 * M_PI * rand() / RAND_MAX ;

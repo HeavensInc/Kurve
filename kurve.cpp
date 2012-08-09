@@ -6,6 +6,8 @@
 #define VERSION "0.00E"
 #endif // VERSION
 
+// !! Incomplete !!
+// #define GM_SCORE
 
 #include "player.h"
 #include "text.h"
@@ -439,7 +441,14 @@ int   loop_mainmenu()
       status = 2 ;
 
       for(int i=0;i<6;i++)
-        player[i].score = 0 ;
+      {
+        player[i].score = 0 ;      
+
+        #ifdef GM_SCORE
+          player[i].score = 10 ;
+        #endif
+      }
+      
     }
     text.gamemenu(player, alpha);
   }
@@ -535,14 +544,21 @@ int         loop_initgame()
           }
         }
       }
+
+      player[i].score = 0 ;      
+
+      #ifdef GM_SCORE
+        player[i].score = 10 ;
+      #endif
       
+            
       if(!skip)
       {
         player[i].initialize(b[i],a[i],i);
         i++;
         tries = 0 ;
       }
-      
+
     }
     status++;
   }
@@ -668,13 +684,17 @@ int         loop_run_game(bool render) //render=true
   {
     if(player[i].isalive())
     {
+      bool  rand  =false; // anders spielen
       bool  check = false;
       int   killer = -1;
       trailobj* t_curr = player[i].get_t_current() ;
       float x = (t_curr->x1 + t_curr->x2) /2.0f;
       float y = (t_curr->y1 + t_curr->y2) /2.0f;
       if( x < DEF_WALL || y < DEF_WALL || x > global.gl_width - DEF_WALL || y > global.gl_height - DEF_SCORES - DEF_WALL )
+      {
         check = true;
+        rand = true ;
+      }
 
       for(int k=0;k<6;k++)
       {      
@@ -740,11 +760,32 @@ int         loop_run_game(bool render) //render=true
 
 
       }
-  
+
+      #ifdef GM_SCORE      
+      static int suicide_prevention[6] = { 0 , 0 , 0 , 0, 0 , 0 };
+
+      suicide_prevention[i]--;
+
+      #endif
+      
       if( check )
       {
-        global.livecount--;
-        player[i].kill();
+        #ifdef GM_SCORE
+        if( rand || suicide_prevention[i] < 0 )
+        {
+          player[i].score--;
+          suicide_prevention[i] = 3 ;
+        
+          if( player[i].score < global.playercount - global.livecount + 1 )
+          {
+            global.livecount--;
+            player[i].kill();
+          }
+        }
+        #else
+          global.livecount--;
+          player[i].kill();
+        
         for(int k=0;k<6;k++)
         {
           if( i != k && player[k].isalive())
@@ -761,6 +802,8 @@ int         loop_run_game(bool render) //render=true
           }
         }
         if(killer > -1 && !player[killer].isalive() ) player[killer].score++;
+    
+        #endif
       }
     }
   }
@@ -808,6 +851,9 @@ int         loop_postgame()
           targetstate = 2;
         }else{
           targetstate = 1;
+          #ifdef GM_SCORE
+            targetstate = 2;
+          #endif
         }
         break;
       case SDLK_ESCAPE:
