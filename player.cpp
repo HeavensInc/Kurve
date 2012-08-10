@@ -358,6 +358,8 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
 {
   trailcheck tc;
   tc.point(x,y);
+
+  trailobj* t_juice = NULL;
   
   trailobj* t_draw;
   t_draw = t_start;
@@ -380,7 +382,12 @@ trailobj*  player_c::collide_contains_point_trail(int x, int y, bool self)
 //        t_draw->keep_this = true ;
         return t_draw;
       }
+    }else{
+      if(tc.check(t_draw))
+      {
+        t_juice = t_draw;
+      }
     }
   }
-  return NULL; 
+  return t_juice; 
 }

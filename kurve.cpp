@@ -724,15 +724,26 @@ int         loop_run_game(bool render) //render=true
         if(!check)
         {
           t_draw = player[k].collide_contains_point_trail( t_curr->x1, t_curr->y1 , (i==k) );
-          if(NULL == t_draw)
+          if(NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type ))
           {
             t_draw = player[k].collide_contains_point_trail( t_curr->x2, t_curr->y2 , (i==k) );
           }
         }
 
-        if(NULL != t_draw)
+        if( not (NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type )))
         {
           check = true;
+        }
+        
+        if(t_draw != NULL)
+        {
+          float x = t_draw->x1/2 +t_draw->x2/2;
+          float y = t_draw->y1/2 +t_draw->y2/2;
+          for(int f=0; f<31; f++)
+          {
+            particle* pt =   pt_create_dot(1.0f, 1.0f, 1.0f, x,y, f) ;  
+            particles.add(pt);
+          }
         }
         
         if(check)
