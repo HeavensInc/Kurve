@@ -1,13 +1,15 @@
 VERSION = 0.09 - Secrets
 
 CC      = /usr/bin/g++
-W32CC   = /usr/bin/mingw32-g++
+W32CC   = /usr/bin/i686-pc-mingw32-g++
+W32CC   = wine /platte_d/Tools/CodeBlocks/MinGW_450/bin/g++.exe
 
 CFLAGS  = -Wall -O2 -g "-DVERSION=\"$(VERSION) Linux\""
-W32CF   = -Wall -O2 -g "-DVERSION=\"$(VERSION) W32\""
+W32CF   = -Wall -O2 "-DVERSION=\"$(VERSION) W32\""
 
 LIBS    = -lSDL -lGL
-W32LIBS = -static-libgcc -static-libstdc++ -lSDL -lopengl32
+#W32LIBS = -lopengl32 `/usr/i686-pc-mingw32/usr/bin/sdl-config --libs`
+W32LIBS = -static-libgcc -static-libstdc++ -lopengl32 `/usr/i686-pc-mingw32/usr/bin/sdl-config --libs`
 
 UNUSED  =  -lSDLmain  -lmingw32
 
