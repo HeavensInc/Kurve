@@ -11,6 +11,8 @@ particle* pt_create_dot(float r,float g,float b,
                 float x,float y,
                 float winkel);
                 
+particle* pt_create_breakthrough(float x,float y, bool death);
+                
 particle* pt_create_punkt(float r,float g,float b,
                 float x,float y);
 

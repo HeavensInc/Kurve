@@ -109,3 +109,37 @@ particle* pt_create_dot(float r,float g,float b,
   
   return pt;
 }
+
+
+particle* pt_create_breakthrough(float x,float y,
+                bool death)
+{
+  float richtung = 2 * M_PI * rand() / RAND_MAX ;
+
+  particle* pt = new particle;
+  pt->prev = NULL;
+  pt->next = NULL;
+
+  pt->type = PT_DOT ;
+
+  pt->r = pt->g = pt->b = 0.5f;
+  
+  pt->pos.x = x;
+  pt->pos.y = y;
+  pt->pos.z = 0;
+  
+  pt->vel.x = cos( richtung ) * DEF_STEPLEN  / ( death ? 1.5 : 1 );
+  pt->vel.y = sin( richtung ) * DEF_STEPLEN  / ( death ? 1.5 : 1 );
+  pt->vel.z = 0;
+  
+  pt->accel.x = 0 ;
+  pt->accel.y = 0 ;
+  pt->accel.z = 0 ;
+  
+  pt->brake    = ( death ? 0.95f : 0.95);
+  pt->lifetime = 20 * ( death ? 4 : 1 ) ;
+  pt->fadetime = 25  ;
+  pt->size     = ( death ? 10 : 8 ) ;
+  
+  return pt;
+}

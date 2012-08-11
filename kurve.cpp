@@ -12,12 +12,13 @@
 #include "player.h"
 #include "text.h"
 #include "staticwait.h"
+#include "sound_controller.h"
 
 bool      game_running;
 bool      menu_loop;
 bool      prep_loop;
 bool      game_loop;
-bool	  post_loop;
+bool	    post_loop;
 
 player_c  player[6];
 
@@ -79,7 +80,14 @@ int main(int argc, char *argv[])
   //
   //
 
-  SDL_Init(SDL_INIT_VIDEO);
+  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+  
+  snd_ctl.init();
+  
+  global.sound_gap_skip = 0;
+  global.sound_gap  = snd_ctl.LoadSound( "snd/gap.wav" );
+  global.sound_kill = snd_ctl.LoadSound( "snd/kill.wav" );
+
   
   { // Init-time variables should not remain .. :)
     char caption[128];
@@ -545,7 +553,7 @@ int         loop_initgame()
         }
       }
 
-      player[i].score = 0 ;      
+//      player[i].score = 0 ;      
 
       #ifdef GM_SCORE
         player[i].score = 10 ;
@@ -678,6 +686,8 @@ int         loop_run_game(bool render) //render=true
     text.scores(player);
     particles.render();
     SDL_GL_SwapBuffers();
+    
+    global.sound_gap_skip--;
   }
   
   for(int i=0;i<6;i++)
@@ -706,8 +716,10 @@ int         loop_run_game(bool render) //render=true
         trailobj* t_end  = player[k].get_t_current() ;
         
         
-        //Prevent killing from behind. not only random suicide.. if(i == k) 
-        t_end = t_end->prev->prev;
+        //Prevent killing from behind. 
+        t_end = t_end->prev;
+        // And random suicide.. 
+        if(i == k) t_end = t_end->prev;
         
         while( t_draw != t_end && !check)
         {
@@ -724,27 +736,45 @@ int         loop_run_game(bool render) //render=true
         if(!check)
         {
           t_draw = player[k].collide_contains_point_trail( t_curr->x1, t_curr->y1 , (i==k) );
-          if(NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type ))
+          if(NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type != 0))
           {
             t_draw = player[k].collide_contains_point_trail( t_curr->x2, t_curr->y2 , (i==k) );
           }
         }
 
-        if( not (NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type )))
+/*        if( not (NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type != 0)))
         {
           check = true;
+          
+          float x = t_draw->x1/2 +t_draw->x2/2;
+          float y = t_draw->y1/2 +t_draw->y2/2;
+          for(int f=0; f<62; f++)
+          {
+            particle* pt =   pt_create_breakthrough(x,y, true) ;  
+            particles.add(pt);
+          }
+
         }
-        
-        if(t_draw != NULL)
+  */      
+        if( !check &&
+            ((t_draw != NULL && t_draw->type != 0 )
+            || (t_draw != NULL && t_draw->prev != NULL && t_draw->prev->type != 0 )))
         {
           float x = t_draw->x1/2 +t_draw->x2/2;
           float y = t_draw->y1/2 +t_draw->y2/2;
           for(int f=0; f<31; f++)
           {
-            particle* pt =   pt_create_dot(1.0f, 1.0f, 1.0f, x,y, f) ;  
+            particle* pt =   pt_create_breakthrough(x,y, false) ;  
             particles.add(pt);
           }
+          
+          if(global.sound_gap_skip < 0)
+          {
+            snd_ctl.PlaySound( global.sound_gap );
+            global.sound_gap_skip=3;
+          }
         }
+                  
         
         if(check)
           if(t_draw->status > 0)
@@ -815,6 +845,17 @@ int         loop_run_game(bool render) //render=true
         if(killer > -1 && !player[killer].isalive() ) player[killer].score++;
     
         #endif
+        
+        snd_ctl.PlaySound( global.sound_kill );
+
+        float x = t_curr->x1/2 +t_curr->x2/2;
+        float y = t_curr->y1/2 +t_curr->y2/2;
+        for(int f=0; f<62; f++)
+        {
+          particle* pt =   pt_create_breakthrough(x,y, true) ;  
+          particles.add(pt);
+        }       
+
       }
     }
   }

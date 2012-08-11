@@ -51,6 +51,10 @@ struct __globals
   
   int   speed_id;
   float speed;
+  
+  int   sound_gap;
+  int   sound_gap_skip;
+  int   sound_kill;
 };
 
 extern __globals global ;
