@@ -2,6 +2,8 @@
 
 // undef main if it was defined by SDL
 #undef main
+
+//  Create an empty version-string if none was supplied by the makefile
 #ifndef VERSION
 #define VERSION "0.00E"
 #endif // VERSION
@@ -55,29 +57,9 @@ int main(int argc, char *argv[])
   global.scale = 1.0f ;
   global.speed_id=0;
   global.speed = 1.0f ;
-  
-  
-  
-/*
-  player[0].set_color( 1.0f , 0.0f , 0.0f );
-  player[1].set_color( 1.0f , 0.5f , 0.0f );
-  player[2].set_color( 1.0f , 1.0f , 0.0f );
-  player[3].set_color( 0.0f , 1.0f , 0.0f );
-  player[4].set_color( 0.0f , 0.5f , 1.0f );
-  player[5].set_color( 1.0f , 0.0f , 1.0f );
-*/
-// See RESET in init_loop ;
-/*
-  player[0].set_color( 1.0f , 0.25f , 0.25f );
-  player[1].set_color( 1.0f , 0.5f , 0.0f );
-  player[2].set_color( 0.85f , 0.85f , 0.0f );
-  player[3].set_color( 0.25f , 1.0f , 0.25f );
-  player[4].set_color( 0.0f , 0.5f , 1.0f );
-  player[5].set_color( 0.75f , 0.0f , 0.75f );
-*/
 
-  //SDL-Start
-  //
+  //  
+  //  SDL-Start
   //
 
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -105,8 +87,8 @@ int main(int argc, char *argv[])
   gl_init(false);
   gl_setup(true);
 
-  // Main-Loops
   //
+  // Main-Loops
   //
   int status;
   while ( game_running == true )
@@ -120,7 +102,6 @@ int main(int argc, char *argv[])
     while ( game_running && menu_loop )
     {
       staticwait(20);
-//      SDL_Delay(20);
       status = loop_mainmenu();
       if(status == 1)
       {
@@ -145,8 +126,6 @@ int main(int argc, char *argv[])
 
     while ( game_running && game_loop )
     {
-
-//      SDL_Delay(20);
       bool zombies = true;
       for( int i=0;i<6;i++)
       {
@@ -179,7 +158,6 @@ int main(int argc, char *argv[])
 
     while ( game_running && post_loop )
     {
-//      SDL_Delay(20);
       staticwait(20);
       status = loop_postgame();
 
@@ -197,8 +175,8 @@ int main(int argc, char *argv[])
 
   }
 
-  // CleanUP
   //
+  // CleanUP
   //
 
   SDL_Quit();
@@ -206,8 +184,6 @@ int main(int argc, char *argv[])
   return 1;
 }
 
-
-//void  gl_init( int w , int h )
 void  gl_init( bool fullscreen , int w , int h )
 {
   if(fullscreen)
@@ -423,7 +399,11 @@ int   loop_mainmenu()
 	}
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+  //
   // RENDER
+  //
 
   static float alpha = 0.0f;
 
@@ -500,7 +480,9 @@ int   loop_mainmenu()
 
 int         loop_initgame()
 { 
-  // RESET Player-Colors ;
+  //
+  // RESET Player-Colors
+  //
   player[0].set_color( 1.0f , 0.25f , 0.25f );
   player[1].set_color( 1.0f , 0.5f , 0.0f );
   player[2].set_color( 0.85f , 0.85f , 0.0f );
@@ -553,8 +535,6 @@ int         loop_initgame()
         }
       }
 
-//      player[i].score = 0 ;      
-
       #ifdef GM_SCORE
         player[i].score = 10 ;
       #endif
@@ -572,46 +552,6 @@ int         loop_initgame()
   }
 
   static int steps = 0 ;
-/*
-  if(status == 1)
-  {
-    steps++;
-//    SDL_Delay(50);
-    for(int i=0;i<6;i++)
-    {
-      player[i].render_go_step(player) ;
-      player[i].render_trail_display() ;
-    }
-    if(steps > 5)
-    {
-      status = 2;
-      steps  = 0;
-    }
-  }
-
-  if(status > 1)
-  {
-//    SDL_Delay(1000.0f / DEF_DEADFADE );
-//      staticwait(20); //   SDL_Delay(20);
-
-    float fade = ((DEF_NUMFADE - steps) * 1.0f /DEF_NUMFADE < 0 ? 0 : (DEF_NUMFADE - steps) * 1.0f /DEF_NUMFADE) ;
-
-    text.countdown( 5 - status + fade );
-
-    fade -= 0.5f ;
-
-    for(int i=0;i<6;i++)
-    {
-      player[i].render_trail_display_fade( DEF_ALPHA , fade ) ;
-    }
-    steps++;
-    if(steps > 50)
-    {
-      steps=0;
-      status++;
-    }
-  }
-  */
   status++;
   if( status < 150 )
   {  
@@ -624,9 +564,7 @@ int         loop_initgame()
     }
     particles.render();
     text.countdown( 4 - status / 50.0f );
-//    std::cout << "Status = " << status << endl ;
   }
-
 
   SDL_GL_SwapBuffers();
 
@@ -694,7 +632,7 @@ int         loop_run_game(bool render) //render=true
   {
     if(player[i].isalive())
     {
-      bool  rand  =false; // anders spielen
+      bool  rand  = false; // anders spielen
       bool  check = false;
       int   killer = -1;
       trailobj* t_curr = player[i].get_t_current() ;
@@ -742,20 +680,6 @@ int         loop_run_game(bool render) //render=true
           }
         }
 
-/*        if( not (NULL == t_draw || t_draw->type != 0 || (t_draw->prev != NULL && t_draw->prev->type != 0)))
-        {
-          check = true;
-          
-          float x = t_draw->x1/2 +t_draw->x2/2;
-          float y = t_draw->y1/2 +t_draw->y2/2;
-          for(int f=0; f<62; f++)
-          {
-            particle* pt =   pt_create_breakthrough(x,y, true) ;  
-            particles.add(pt);
-          }
-
-        }
-  */      
         if( !check &&
             ((t_draw != NULL && t_draw->type != 0 )
             || (t_draw != NULL && t_draw->prev != NULL && t_draw->prev->type != 0 )))
@@ -803,10 +727,9 @@ int         loop_run_game(bool render) //render=true
       }
 
       #ifdef GM_SCORE      
-      static int suicide_prevention[6] = { 0 , 0 , 0 , 0, 0 , 0 };
+        static int suicide_prevention[6] = { 0 , 0 , 0 , 0, 0 , 0 };
 
-      suicide_prevention[i]--;
-
+        suicide_prevention[i]--;
       #endif
       
       if( check )
@@ -859,9 +782,6 @@ int         loop_run_game(bool render) //render=true
       }
     }
   }
-
-
-//  DEBUG( std::cout << " L " << global.livecount << " P " << global.playercount << "\n" ; )
 
   if(global.livecount < 2)
   {
@@ -932,10 +852,6 @@ int         loop_postgame()
   SDL_GL_SwapBuffers();
 
   gl_setup(false);
-  
-//  DEBUG( std::cout << " L " << global.livecount << " P " << global.playercount << "\n" ; )
-
-
 
   if(targetstate == 0)
   {
